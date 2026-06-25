@@ -1,2 +1,33 @@
 # LLM4EDA
 Verilog/Json converter
+
+## Verilog to Json
+```shell
+(base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/parse_to_json.py --top riscv_core /home/gzr/test/riscv-master/riscv-master/core/riscv/*.v -o output/design_riscv.json
+[OK] 已生成规范 JSON: output/design_riscv.json
+     模块数: 19
+```
+
+## Json to Verilog
+```shell
+(base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/generate_from_json.py output/design_riscv.json -o output/generated/riscv_core_restored.v
+[OK] 已生成 Verilog: output/generated/riscv_core_restored.v
+     总行数: 3363
+```
+
+## Json Visualization
+Support Json to Dot/SVG.
+```shell
+(base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/visualize_block.py output/design_riscv.json --format svg -o output/diagrams/design_riscv.svg
+Warning: Orthogonal edges do not currently handle edge labels. Try using xlabels.
+[OK] 已生成 SVG 文件: output/diagrams/design_riscv.svg
+```
+
+## LLM Editing
+```shell
+(base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/llm_edit.py --config
+(base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/llm_edit.py output/design_riscv.json -p "将riscv_alu的description的值改为alu运算器"
+  [LLM] 发送修改请求...
+[OK] 已保存修改后的 JSON: output/design_riscv.json
+     应用了 1 项变更
+```
