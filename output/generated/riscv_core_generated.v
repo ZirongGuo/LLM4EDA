@@ -1,0 +1,65 @@
+`include "defines.vh"
+`define WORD_SIZE 32
+`define RESET_PC 32'h00001000
+
+module riscv_core
+#(
+  parameter XLEN int = 32
+)
+(
+  input wire clk,
+  input wire rst_n,
+  output reg [31:0] inst_mem_addr,
+  input wire [31:0] inst_mem_data
+);
+
+  reg  [31:0] pc_current;
+  wire  [31:0] pc_next;
+  wire  [31:0] instruction;
+  wire  [31:0] alu_result;
+  wire  alu_op;
+
+  function logic [31:0] alu_add();
+    alu_add  = (a + b);
+  endfunction
+
+  task pipeline_flush();
+    pc_current  = pc_next;
+  endtask
+
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      pc_current  <= `RESET_PC;
+    end else begin
+      pc_current  <= (pc_current + 32'h4);
+    end
+  end
+  always_comb begin
+    case (instruction)
+      32'b00000000000000000000000000110011: begin
+        pc_next  = alu_result;
+      end
+      default: begin
+        pc_next  = (pc_current + 32'h4);
+      end
+    endcase
+  end
+
+  assign #1 inst_mem_addr = pc_current;
+
+  u_alu #(
+    .WIDTH(XLEN)
+  ) u_alu (
+    .a(pc_current),
+    .b(32'h4),
+    .op(alu_op),
+    .result(alu_result)
+  );
+  u_special_32bit u_special_32bit (
+  );
+
+  generate
+    if ((XLEN == 32)) begin
+    end
+  endgenerate
+endmodule

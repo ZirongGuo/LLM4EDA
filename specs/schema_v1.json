@@ -1,0 +1,302 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Verilog/SystemVerilog Bidirectional JSON Schema v1.0",
+  "description": "用于 Verilog/SystemVerilog ↔ JSON 双向转换的规范 JSON Schema",
+  "type": "object",
+  "required": ["version", "metadata", "modules"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "规范版本号"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "design_name": { "type": "string" },
+        "source_files": { "type": "array", "items": { "type": "string" } },
+        "top_module": { "type": "string" },
+        "description": { "type": "string" },
+        "generated_by": { "type": "string" },
+        "generated_at": { "type": "string", "format": "date-time" }
+      },
+      "required": ["design_name", "top_module"]
+    },
+    "includes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "defines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "value": { "type": "string" }
+        },
+        "required": ["name", "value"]
+      }
+    },
+    "packages": {
+      "type": "array",
+      "items": { "type": "object" }
+    },
+    "modules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/Module" }
+    },
+    "design_hierarchy": {
+      "type": "object",
+      "properties": {
+        "top": { "type": "string" },
+        "tree": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Expression": {
+      "oneOf": [
+        { "$ref": "#/definitions/RefExpr" },
+        { "$ref": "#/definitions/LiteralExpr" },
+        { "$ref": "#/definitions/SelectExpr" },
+        { "$ref": "#/definitions/BitSelectExpr" },
+        { "$ref": "#/definitions/UnaryExpr" },
+        { "$ref": "#/definitions/BinaryExpr" },
+        { "$ref": "#/definitions/CondExpr" },
+        { "$ref": "#/definitions/ConcatExpr" },
+        { "$ref": "#/definitions/ReplicateExpr" },
+        { "$ref": "#/definitions/CallExpr" }
+      ]
+    },
+    "RefExpr": {
+      "type": "object",
+      "required": ["ref"],
+      "properties": { "ref": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "LiteralExpr": {
+      "type": "object",
+      "required": ["literal"],
+      "properties": { "literal": { "type": "string" } },
+      "additionalProperties": false
+    },
+    "SelectExpr": {
+      "type": "object",
+      "required": ["type", "source", "range"],
+      "properties": {
+        "type": { "enum": ["select"] },
+        "source": { "$ref": "#/definitions/Expression" },
+        "range": {
+          "type": "object",
+          "required": ["msb", "lsb"],
+          "properties": {
+            "msb": { "type": "integer" },
+            "lsb": { "type": "integer" }
+          }
+        }
+      }
+    },
+    "BitSelectExpr": {
+      "type": "object",
+      "required": ["type", "source", "index"],
+      "properties": {
+        "type": { "enum": ["bit_select"] },
+        "source": { "$ref": "#/definitions/Expression" },
+        "index": { "$ref": "#/definitions/Expression" }
+      }
+    },
+    "UnaryExpr": {
+      "type": "object",
+      "required": ["op", "operand"],
+      "properties": {
+        "op": { "enum": ["!", "~", "-", "&", "~&", "|", "~|", "^", "~^"] },
+        "operand": { "$ref": "#/definitions/Expression" }
+      }
+    },
+    "BinaryExpr": {
+      "type": "object",
+      "required": ["op", "left", "right"],
+      "properties": {
+        "op": { "type": "string" },
+        "left": { "$ref": "#/definitions/Expression" },
+        "right": { "$ref": "#/definitions/Expression" }
+      }
+    },
+    "CondExpr": {
+      "type": "object",
+      "required": ["type", "condition", "true_expr", "false_expr"],
+      "properties": {
+        "type": { "enum": ["cond"] },
+        "condition": { "$ref": "#/definitions/Expression" },
+        "true_expr": { "$ref": "#/definitions/Expression" },
+        "false_expr": { "$ref": "#/definitions/Expression" }
+      }
+    },
+    "ConcatExpr": {
+      "type": "object",
+      "required": ["type", "parts"],
+      "properties": {
+        "type": { "enum": ["concat"] },
+        "parts": { "type": "array", "items": { "$ref": "#/definitions/Expression" } }
+      }
+    },
+    "ReplicateExpr": {
+      "type": "object",
+      "required": ["type", "times", "value"],
+      "properties": {
+        "type": { "enum": ["replicate"] },
+        "times": { "$ref": "#/definitions/Expression" },
+        "value": { "$ref": "#/definitions/Expression" }
+      }
+    },
+    "CallExpr": {
+      "type": "object",
+      "required": ["type", "function", "arguments"],
+      "properties": {
+        "type": { "enum": ["call"] },
+        "function": { "type": "string" },
+        "arguments": { "type": "array", "items": { "$ref": "#/definitions/Expression" } }
+      }
+    },
+    "Module": {
+      "type": "object",
+      "required": ["name", "ports", "signals"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "enum": ["parameter", "localparam"] },
+              "data_type": { "type": "string" },
+              "value": { "type": "string" }
+            },
+            "required": ["name", "value"]
+          }
+        },
+        "ports": { "type": "array", "items": { "$ref": "#/definitions/Port" } },
+        "signals": { "type": "array", "items": { "$ref": "#/definitions/Signal" } },
+        "functions": { "type": "array", "items": { "$ref": "#/definitions/Function" } },
+        "tasks": { "type": "array", "items": { "$ref": "#/definitions/Task" } },
+        "always_blocks": { "type": "array", "items": { "$ref": "#/definitions/AlwaysBlock" } },
+        "assignments": { "type": "array", "items": { "$ref": "#/definitions/Assignment" } },
+        "instances": { "type": "array", "items": { "$ref": "#/definitions/Instance" } },
+        "generates": { "type": "array", "items": { "$ref": "#/definitions/Generate" } }
+      }
+    },
+    "Port": {
+      "type": "object",
+      "required": ["name", "direction", "data_type", "width"],
+      "properties": {
+        "name": { "type": "string" },
+        "direction": { "enum": ["input", "output", "inout"] },
+        "data_type": { "type": "string" },
+        "width": { "type": "integer" },
+        "signed": { "type": "boolean" }
+      }
+    },
+    "Signal": {
+      "type": "object",
+      "required": ["name", "type", "width"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string" },
+        "width": { "type": "integer" },
+        "signed": { "type": "boolean" },
+        "initial_value": { "type": "string" }
+      }
+    },
+    "AlwaysBlock": {
+      "type": "object",
+      "required": ["id", "type", "body"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "enum": ["always", "always_comb", "always_ff", "always_latch"] },
+        "sensitivity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": { "enum": ["posedge", "negedge", "level"] },
+              "signal": { "type": "string" }
+            }
+          }
+        },
+        "body": { "type": "array" },
+        "description": { "type": "string" }
+      }
+    },
+    "Assignment": {
+      "type": "object",
+      "required": ["lhs", "rhs", "blocking"],
+      "properties": {
+        "id": { "type": "string" },
+        "lhs": { "$ref": "#/definitions/Expression" },
+        "rhs": { "$ref": "#/definitions/Expression" },
+        "blocking": { "type": "boolean" },
+        "delay": {
+          "type": "object",
+          "properties": {
+            "value": { "type": "string" },
+            "type": { "type": "string" }
+          }
+        }
+      }
+    },
+    "Instance": {
+      "type": "object",
+      "required": ["name", "module"],
+      "properties": {
+        "name": { "type": "string" },
+        "module": { "type": "string" },
+        "parameter_mapping": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/Expression" }
+        },
+        "port_connections": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "port": { "type": "string" },
+              "connection": { "$ref": "#/definitions/Expression" }
+            }
+          }
+        }
+      }
+    },
+    "Function": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "return_type": { "type": "string" },
+        "inputs": { "type": "array", "items": { "$ref": "#/definitions/Port" } },
+        "body": { "type": "array" }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "inputs": { "type": "array" },
+        "outputs": { "type": "array" },
+        "body": { "type": "array" }
+      }
+    },
+    "Generate": {
+      "type": "object",
+      "properties": {
+        "condition": { "$ref": "#/definitions/Expression" },
+        "body": { "type": "array" }
+      }
+    }
+  }
+}
