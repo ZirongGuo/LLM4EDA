@@ -1,0 +1,61 @@
+## 模块名称
+riscv_pipe_ctrl (RISC-V Pipeline Control)
+
+## 逻辑类型
+组合逻辑（子模块）
+
+## 功能概述
+RISC-V 流水线控制模块，集中管理所有流水线控制信号。模块根据各执行单元的状态（暂停、写回、分支、中断等）生成流水线暂停、冲刷和转发控制信号，确保流水线正确执行和冒险处理。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| exec_hold_i | 1 | input | 执行单元暂停请求 |
+| lsu_stall_i | 1 | input | 访存单元暂停请求 |
+| mul_hold_i | 1 | input | 乘法单元暂停请求 |
+| branch_exec_request_i | 1 | input | 执行分支请求 |
+| branch_exec_is_taken_i | 1 | input | 执行分支已跳转 |
+| branch_csr_request_i | 1 | input | CSR 分支请求 |
+| take_interrupt_i | 1 | input | 中断响应标志 |
+| writeback_mem_valid_i | 1 | input | 访存写回有效 |
+| writeback_mem_exception_i | 5:0 | input | 访存写回异常 |
+| writeback_div_valid_i | 1 | input | 除法写回有效 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| fetch_stall_o | 1 | output | 取指暂停标志 |
+| decode_stall_o | 1 | output | 译码暂停标志 |
+| issue_stall_o | 1 | output | 发射暂停标志 |
+| squash_fetch_o | 1 | output | 取指冲刷标志 |
+| squash_decode_o | 1 | output | 译码冲刷标志 |
+| squash_issue_o | 1 | output | 发射冲刷标志 |
+
+## 功能说明
+
+### 1. 暂停控制
+根据各单元的状态生成暂停信号：
+- 当 exec_hold_i 有效时暂停流水线
+- 当 lsu_stall_i 有效时暂停流水线
+- 当 mul_hold_i 有效时暂停流水线
+- 暂停信号传播到取指、译码、发射三个阶段
+
+### 2. 冲刷控制
+根据分支和中断请求生成冲刷信号：
+- 执行分支跳转时冲刷译码和发射级
+- CSR 分支时冲刷译码和发射级
+- 中断响应时冲刷所有流水级
+- 冲刷后 Fetch 跳转到新地址继续取指
+
+### 3. 冒险处理
+- 检测写后读（RAW）冒险
+- 控制数据前递（bypass）路径选择
+- 在必要时插入暂停周期
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_pipe_ctrl.v

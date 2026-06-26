@@ -1,0 +1,55 @@
+## 模块名称
+riscv_multiplier (RISC-V Multiplier)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 乘法器模块，支持有符号和无符号乘法运算。操作包括 MUL（低位乘积）、MULH（高位有符号乘积）、MULHSU（高位有符号-无符号混合乘积）、MULHU（高位无符号乘积）。该模块是一个多周期时序模块，内部使用流水线或迭代算法完成乘法运算。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| opcode_valid_i | 1 | input | 操作码有效标志 |
+| opcode_opcode_i | 31:0 | input | 指令操作码 |
+| opcode_pc_i | 31:0 | input | 指令 PC 值 |
+| opcode_invalid_i | 1 | input | 非法指令标志 |
+| opcode_rd_idx_i | 4:0 | input | 目标寄存器索引 |
+| opcode_ra_idx_i | 4:0 | input | 源操作数 A 寄存器索引 |
+| opcode_rb_idx_i | 4:0 | input | 源操作数 B 寄存器索引 |
+| opcode_ra_operand_i | 31:0 | input | 源操作数 A 值 |
+| opcode_rb_operand_i | 31:0 | input | 源操作数 B 值 |
+| hold_i | 1 | input | 流水线暂停标志 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| writeback_value_o | 31:0 | output | 写回结果值 |
+
+## 功能说明
+
+### 1. 乘法运算类型
+- MUL: 32 位低位乘积，result = (rs1 × rs2)[31:0]
+- MULH: 32x32 位有符号高位乘积
+- MULHSU: 32x32 位有符号-无符号高位乘积
+- MULHU: 32x32 位无符号高位乘积
+
+### 2. 多周期执行
+- 乘法运算可能需要多个时钟周期完成
+- 内部包含状态机控制运算进度
+- 运算完成后通过 writeback_valid_o 通知 Issue 单元
+
+### 3. 流水线控制
+- 当 hold_i 有效时暂停运算
+- 支持多个乘法指令流水执行
+- 运算结果直接输出到 writeback_value_o
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_multiplier.v

@@ -1,0 +1,75 @@
+## 模块名称
+riscv_fetch (RISC-V Fetch Unit)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 取指单元模块，负责从指令缓存（icache）中获取指令并传递给译码级。管理取指地址生成、分支跳转处理、指令缓存接口通信。支持分支预测后的目标地址重定向、指令缓存刷新和无效化操作。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| fetch_accept_i | 1 | input | 下游接受标志（译码级反馈） |
+| icache_accept_i | 1 | input | 指令缓存接受标志 |
+| icache_valid_i | 1 | input | 指令缓存有效标志 |
+| icache_error_i | 1 | input | 指令缓存错误标志 |
+| icache_inst_i | 31:0 | input | 指令缓存返回指令 |
+| icache_page_fault_i | 1 | input | 指令缓存页故障标志 |
+| fetch_invalidate_i | 1 | input | 取指无效化信号（IFENCE） |
+| branch_request_i | 1 | input | 分支请求信号 |
+| branch_pc_i | 31:0 | input | 分支目标 PC |
+| branch_priv_i | 1:0 | input | 分支目标特权级 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| fetch_valid_o | 1 | output | 取指输出有效标志 |
+| fetch_instr_o | 31:0 | output | 取指输出指令 |
+| fetch_pc_o | 31:0 | output | 取指输出 PC |
+| fetch_fault_fetch_o | 1 | output | 取指输出取指故障标志 |
+| fetch_fault_page_o | 1 | output | 取指输出页故障标志 |
+| icache_rd_o | 1 | output | 指令缓存读请求 |
+| icache_flush_o | 1 | output | 指令缓存刷新请求 |
+| icache_invalidate_o | 1 | output | 指令缓存无效化请求 |
+| icache_pc_o | 31:0 | output | 指令缓存访问 PC |
+| icache_priv_o | 1:0 | output | 指令缓存访问特权级 |
+| squash_decode_o | 1 | output | 译码级冲刷信号 |
+
+## 功能说明
+
+### 1. 取指地址管理
+- 顺序取指：PC = PC + 4
+- 分支取指：从分支预测器获取目标地址
+- 异常取指：从 CSR 模块获取异常向量地址
+
+### 2. 指令缓存接口
+- 通过 icache_rd_o 发起读请求
+- 发送访问地址到 icache_pc_o
+- 接收指令和数据（icache_inst_i）
+- 处理缓存错误和页故障
+
+### 3. 分支处理
+- 响应分支请求（branch_request_i）
+- 跳转到分支目标地址（branch_pc_i）
+- 设置新特权级（branch_priv_i）
+- 冲刷译码级流水线（squash_decode_o）
+
+### 4. 缓存维护
+- IFENCE 指令触发指令缓存无效化
+- 支持指令缓存刷新操作
+
+### 5. 流水线控制
+- 当下游暂停时停止取指
+- 分支跳转时冲刷译码级
+- 处理页面故障和取指故障
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_fetch.v

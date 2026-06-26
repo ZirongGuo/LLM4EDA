@@ -1,0 +1,100 @@
+## 模块名称
+riscv_csr (RISC-V Control and Status Register)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V CSR 处理模块，负责处理所有 CSR（控制与状态寄存器）指令，包括 CSRRW、CSRRS、CSRRC、CSRRWI、CSRRSI、CSRRCI 以及 ECALL、EBREAK、ERET、WFI、FENCE 等特殊指令。模块管理中断处理、异常处理、特权级切换，并控制 MMU 相关信号（sum、mxr、satp、flush、priv）。内部使用 riscv_csr_regfile 子模块存储所有 CSR 寄存器的状态。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| opcode_valid_i | 1 | input | 操作码有效标志 |
+| opcode_opcode_i | 31:0 | input | 指令操作码 |
+| opcode_pc_i | 31:0 | input | 指令 PC 值 |
+| opcode_invalid_i | 1 | input | 非法指令标志 |
+| opcode_rd_idx_i | 4:0 | input | 目标寄存器索引 |
+| opcode_ra_idx_i | 4:0 | input | 源操作数 A 寄存器索引 |
+| opcode_rb_idx_i | 4:0 | input | 源操作数 B 寄存器索引 |
+| opcode_ra_operand_i | 31:0 | input | 源操作数 A 值 |
+| opcode_rb_operand_i | 31:0 | input | 源操作数 B 值 |
+| csr_writeback_write_i | 1 | input | CSR 写回写使能 |
+| csr_writeback_waddr_i | 11:0 | input | CSR 写回写地址 |
+| csr_writeback_wdata_i | 31:0 | input | CSR 写回写数据 |
+| csr_writeback_exception_i | 5:0 | input | CSR 写回异常类型 |
+| csr_writeback_exception_pc_i | 31:0 | input | CSR 写回异常 PC |
+| csr_writeback_exception_addr_i | 31:0 | input | CSR 写回异常地址 |
+| cpu_id_i | 31:0 | input | CPU ID |
+| reset_vector_i | 31:0 | input | 复位向量基址 |
+| intr_i | 1 | input | 外部中断信号 |
+| interrupt_inhibit_i | 1 | input | 中断禁止标志 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| csr_result_e1_value_o | 31:0 | output | CSR 结果值（E1 阶段） |
+| csr_result_e1_write_o | 1 | output | CSR 结果写使能（E1 阶段） |
+| csr_result_e1_wdata_o | 31:0 | output | CSR 结果写数据（E1 阶段） |
+| csr_result_e1_exception_o | 5:0 | output | CSR 结果异常类型（E1 阶段） |
+| branch_csr_request_o | 1 | output | CSR 分支请求 |
+| branch_csr_pc_o | 31:0 | output | CSR 分支目标 PC |
+| branch_csr_priv_o | 1:0 | output | CSR 分支目标特权级 |
+| take_interrupt_o | 1 | output | 中断响应标志 |
+| ifence_o | 1 | output | 指令 fence 标志 |
+| mmu_priv_d_o | 1:0 | output | MMU 数据访问特权级 |
+| mmu_sum_o | 1 | output | MMU Supervisor User Memory 使能 |
+| mmu_mxr_o | 1 | output | MMU 可执行可读标志 |
+| mmu_flush_o | 1 | output | MMU TLB 刷新标志 |
+| mmu_satp_o | 31:0 | output | MMU SATP 寄存器值 |
+
+## 状态机
+无独立状态机。状态由 riscv_csr_regfile 内的 CSR 寄存器组维护。
+
+## 功能说明
+
+### 1. CSR 指令处理
+- CSRRW: 原子读写 CSR，将 rs1 值写入 CSR，原 CSR 值写入 rd
+- CSRRS: 原子读并置位 CSR，将 rs1 中为 1 的位对应 CSR 位置位
+- CSRRC: 原子读并清除 CSR，将 rs1 中为 1 的位对应 CSR 位清除
+- CSRRWI/CSRRSI/CSRRCI: 立即数版本，使用 uimm 作为 rs1
+
+### 2. 特殊指令处理
+- ECALL: 环境调用，产生同步异常（按当前特权级）
+- EBREAK: 断点指令，产生断点异常
+- ERET: 异常返回，根据特权级从 MEPC/SEPC 恢复
+- WFI: 等待中断，进入低功耗状态
+- FENCE: 内存屏障
+
+### 3. 中断处理
+- 检测全局中断使能（MIE/SIE）
+- 根据 mideleg 判断中断委托
+- 产生中断向量地址（mtvec/stvec）
+- 中断优先级管理（M 模式中断优先于 S 模式）
+
+### 4. 异常处理
+- 保存异常 PC 到 MEPC/SEPC
+- 设置异常原因到 MCAUSE/SCAUSE
+- 设置异常地址到 MTVAL/STVAL
+- 根据 medeleg 判断异常委托
+- 切换特权级
+
+### 5. MMU 控制输出
+- 根据 MPRV 和 MPP 生成 mmu_priv_d_o
+- 输出 SUM、MXR 控制信号
+- 输出 SATP 寄存器值
+- 输出 TLB 刷新信号
+
+## 子模块调用
+### u_csrfile (riscv_csr_regfile)
+CSR 寄存器文件，存储所有 CSR 寄存器状态，包括：
+- mstatus, misa, mtvec, mepc, mcause, mtval, mie, mip
+- mscratch, mcycle, mtimecmp, medeleg, mideleg
+- sepc, stvec, scause, stval, satp, sscratch
+
+## Verilog 关联
+riscv_csr.v

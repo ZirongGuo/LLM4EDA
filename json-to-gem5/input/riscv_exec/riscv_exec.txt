@@ -1,0 +1,76 @@
+## 模块名称
+riscv_exec (RISC-V Execution Unit)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 执行单元模块，负责执行算术逻辑运算、分支条件判断、立即数生成等操作。内部包含 riscv_alu 子模块完成 ALU 运算。模块根据指令类型计算执行结果、分支跳转目标和分支条件，并为分支预测器提供分支反馈信息。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| opcode_valid_i | 1 | input | 操作码有效标志 |
+| opcode_opcode_i | 31:0 | input | 指令操作码 |
+| opcode_pc_i | 31:0 | input | 指令 PC 值 |
+| opcode_invalid_i | 1 | input | 非法指令标志 |
+| opcode_rd_idx_i | 4:0 | input | 目标寄存器索引 |
+| opcode_ra_idx_i | 4:0 | input | 源操作数 A 寄存器索引 |
+| opcode_rb_idx_i | 4:0 | input | 源操作数 B 寄存器索引 |
+| opcode_ra_operand_i | 31:0 | input | 源操作数 A 值 |
+| opcode_rb_operand_i | 31:0 | input | 源操作数 B 值 |
+| hold_i | 1 | input | 流水线暂停标志 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| branch_request_o | 1 | output | 分支请求标志 |
+| branch_is_taken_o | 1 | output | 分支条件满足（已跳转） |
+| branch_is_not_taken_o | 1 | output | 分支条件不满足（未跳转） |
+| branch_source_o | 1:0 | output | 分支源类型 |
+| branch_is_call_o | 1 | output | 函数调用标志 |
+| branch_is_ret_o | 1 | output | 函数返回标志 |
+| branch_is_jmp_o | 1 | output | 无条件跳转标志 |
+| branch_pc_o | 31:0 | output | 分支目标 PC |
+| branch_d_request_o | 1 | output | 分支延迟请求 |
+| branch_d_pc_o | 31:0 | output | 分支延迟目标 PC |
+| branch_d_priv_o | 1:0 | output | 分支延迟目标特权级 |
+| writeback_value_o | 31:0 | output | 写回结果值 |
+
+## 功能说明
+
+### 1. ALU 运算
+通过 riscv_alu 子模块执行所有算术逻辑运算：
+- 加法（ADD/ADDI）
+- 减法（SUB）
+- 按位与/或/异或
+- 左移/右移
+- 有符号/无符号比较
+
+### 2. 立即数生成
+根据指令类型生成立即数：
+- I 型立即数（12 位有符号扩展）
+- S 型立即数（存储地址偏移）
+- B 型立即数（分支偏移）
+- U 型立即数（高位立即数）
+- J 型立即数（跳转偏移）
+
+### 3. 分支执行
+- 计算分支条件（BEQ, BNE, BLT, BGE, BLTU, BGEU）
+- 计算跳转目标（JAL, JALR）
+- 生成分支预测反馈（taken/not taken）
+
+### 4. 写回结果
+- 计算 ALU 结果并输出写回值
+- 处理 LUI、AUIPC 等特殊指令的结果
+
+## 子模块调用
+### riscv_alu
+组合逻辑 ALU 模块，执行具体算术运算。
+
+## Verilog 关联
+riscv_exec.v

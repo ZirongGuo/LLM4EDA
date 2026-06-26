@@ -1,0 +1,60 @@
+## 模块名称
+riscv_decoder (RISC-V Instruction Decoder)
+
+## 逻辑类型
+组合逻辑（子模块）
+
+## 功能概述
+RISC-V 指令解码器，纯组合逻辑模块。根据输入的 32 位 RISC-V 指令 opcode，解码出指令的类型标志（exec、lsu、branch、mul、div、csr）以及是否有目标寄存器写入和是否为非法指令。支持 RV32I 基础指令集以及 RV32M 乘法扩展指令集。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| valid_i | 1 | input | 指令有效标志 |
+| fetch_fault_i | 1 | input | 取指故障标志（故障时指令无效） |
+| enable_muldiv_i | 1 | input | 乘法除法扩展使能 |
+| opcode_i | 31:0 | input | 32 位指令操作码 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| invalid_o | 1 | output | 非法指令标志 |
+| exec_o | 1 | output | ALU/算术指令标志 |
+| lsu_o | 1 | output | 访存（加载/存储）指令标志 |
+| branch_o | 1 | output | 分支指令标志 |
+| mul_o | 1 | output | 乘法指令标志 |
+| div_o | 1 | output | 除法指令标志 |
+| csr_o | 1 | output | CSR 指令标志 |
+| rd_valid_o | 1 | output | 指令有目标寄存器写入标志 |
+
+## 功能说明
+
+### 1. 指令解码逻辑
+通过比较 opcode_i 与定义的指令掩码来识别指令类型。支持的指令类别：
+
+- **立即数算术指令**: ADDI, SLTI, SLTIU, ANDI, ORI, XORI, SLLI, SRLI, SRAI
+- **寄存器算术指令**: ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND
+- **加载指令**: LB, LH, LW, LBU, LHU, LWU
+- **存储指令**: SB, SH, SW
+- **分支指令**: BEQ, BNE, BLT, BGE, BLTU, BGEU
+- **跳转指令**: JAL, JALR
+- **特殊指令**: LUI, AUIPC
+- **CSR 指令**: CSRRW, CSRRS, CSRRC, CSRRWI, CSRRSI, CSRRCI
+- **同步指令**: ECALL, EBREAK, ERET, WFI, FENCE, SFENCE, IFENCE
+- **乘法扩展(M)**: MUL, MULH, MULHSU, MULHU, DIV, DIVU, REM, REMU
+
+### 2. rd_valid_o 判定
+判断目标寄存器有效的指令：JALR, JAL, LUI, AUIPC, ADDI, SLLI, SLTI, SLTIU, XORI, SRLI, SRAI, ORI, ANDI, ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND, LB, LH, LW, LBU, LHU, LWU, CSRRW, CSRRS, CSRRC, CSRRWI, CSRRSI, CSRRCI, MUL, MULH, MULHSU, MULHU, DIV, DIVU, REM, REMU
+
+### 3. 非法指令检测
+- 当 valid_i 有效且未取指故障时，检查是否匹配任一已知指令
+- 若不匹配任何已知指令模式，则标志为非法指令
+- 当 enable_muldiv_i=0 时，M 扩展指令被视为非法
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_decoder.v

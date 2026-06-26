@@ -1,0 +1,76 @@
+## 模块名称
+riscv_decode (RISC-V Decode Stage)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 流水线译码级模块，位于 Fetch 和 Issue 之间。负责缓存来自 Fetch 阶段的指令、PC 和故障信息，并根据参数 EXTRA_DECODE_STAGE 决定是否插入额外的译码流水级。内部实例化 riscv_decoder 组合逻辑模块，完成指令类型的解码。当流水线冲刷信号 squash_decode_i 有效时，清除译码级内容。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| fetch_in_valid_i | 1 | input | 取指输入有效标志 |
+| fetch_in_instr_i | 31:0 | input | 取指输入指令 |
+| fetch_in_pc_i | 31:0 | input | 取指输入 PC |
+| fetch_in_fault_fetch_i | 1 | input | 取指输入取指故障 |
+| fetch_in_fault_page_i | 1 | input | 取指输入页故障 |
+| fetch_out_accept_i | 1 | input | 下游接受标志（Issue 单元反馈） |
+| squash_decode_i | 1 | input | 译码级冲刷信号 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| fetch_in_accept_o | 1 | output | 上游接受标志（反馈给 Fetch） |
+| fetch_out_valid_o | 1 | output | 译码输出有效标志 |
+| fetch_out_instr_o | 31:0 | output | 译码输出指令 |
+| fetch_out_pc_o | 31:0 | output | 译码输出 PC |
+| fetch_out_fault_fetch_o | 1 | output | 译码输出取指故障 |
+| fetch_out_fault_page_o | 1 | output | 译码输出页故障 |
+| fetch_out_instr_exec_o | 1 | output | 指令类型：执行单元 |
+| fetch_out_instr_lsu_o | 1 | output | 指令类型：访存单元 |
+| fetch_out_instr_branch_o | 1 | output | 指令类型：分支单元 |
+| fetch_out_instr_mul_o | 1 | output | 指令类型：乘法单元 |
+| fetch_out_instr_div_o | 1 | output | 指令类型：除法单元 |
+| fetch_out_instr_csr_o | 1 | output | 指令类型：CSR 单元 |
+| fetch_out_instr_rd_valid_o | 1 | output | 指令有目标寄存器写 |
+| fetch_out_instr_invalid_o | 1 | output | 非法指令标志 |
+
+## 功能说明
+
+### 1. 译码级流水线寄存器
+- EXTRA_DECODE_STAGE=0: 直通模式，跳过额外译码级
+- EXTRA_DECODE_STAGE=1: 插入一个额外的译码流水级，使用额外的 riscv_decoder
+
+### 2. 指令传递
+- 在每周期 process() 中，将输入直接传递到输出
+- 如发现取指故障或页故障，指令清零
+- fetch_out_valid_o = fetch_in_valid_i（直通有效信号）
+
+### 3. 流水线冲刷
+- 当 squash_decode_i 有效时，译码级内容将被清除
+
+### 4. 指令解码
+通过 riscv_decoder 子模块将指令 opcode 解码为：
+- exec_o: ALU/算术指令
+- lsu_o: 加载/存储指令
+- branch_o: 分支/跳转指令
+- mul_o: 乘法指令
+- div_o: 除法指令
+- csr_o: CSR 指令
+- rd_valid_o: 有目标寄存器写入
+- invalid_o: 非法指令
+
+### 5. 后向压力传递
+- fetch_in_accept_o = fetch_out_accept_i，将下游接受信号直接反馈给 Fetch
+
+## 子模块调用
+### u_dec (riscv_decoder)
+组合逻辑指令解码器，根据指令 opcode 解码指令类型。
+
+## Verilog 关联
+riscv_decode.v

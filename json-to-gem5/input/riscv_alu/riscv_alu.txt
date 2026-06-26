@@ -1,0 +1,52 @@
+## 模块名称
+riscv_alu (RISC-V Arithmetic Logic Unit)
+
+## 逻辑类型
+组合逻辑（子模块）
+
+## 功能概述
+RISC-V 算术逻辑单元，负责执行所有 ALU 运算操作，包括加法、减法、按位与/或/异或、逻辑左移/右移、算术右移、无符号比较和带符号比较。该模块是一个纯组合逻辑模块，通过 alu_op_i 选择运算类型，在 process() 中计算并将结果输出到 alu_p_o。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| alu_a_i | 31:0 | input | ALU 第一个操作数 |
+| alu_b_i | 31:0 | input | ALU 第二个操作数 |
+| alu_op_i | 3:0 | input | ALU 操作码选择 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| alu_p_o | 31:0 | output | ALU 运算结果 |
+
+## 功能说明
+
+### 1. 运算操作选择
+通过 alu_op_i 选择不同的运算类型：
+- ALU_NONE (4'b0000): 直通，result = alu_a_i
+- ALU_SHIFTL (4'b0001): 逻辑左移，使用分级移位算法
+- ALU_SHIFTR (4'b0010): 逻辑右移，使用分级移位算法
+- ALU_SHIFTR_ARITH (4'b0011): 算术右移，使用分级移位算法（符号位填充）
+- ALU_ADD (4'b0100): 加法，result = alu_a_i + alu_b_i
+- ALU_SUB (4'b0110): 减法，result = alu_a_i - alu_b_i
+- ALU_AND (4'b0111): 按位与，result = alu_a_i & alu_b_i
+- ALU_OR (4'b1000): 按位或，result = alu_a_i | alu_b_i
+- ALU_XOR (4'b1001): 按位异或，result = alu_a_i ^ alu_b_i
+- ALU_LESS_THAN (4'b1010): 无符号小于比较
+- ALU_LESS_THAN_SIGNED (4'b1011): 带符号小于比较
+
+### 2. 分级移位算法
+移位操作采用分级移位实现：
+- 先进行 1 位移位
+- 再进行 2 位移位
+- 再进行 4 位移位
+- 最后进行 8 位移位
+- 输出 16 位后的结果
+
+### 3. 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_alu.v

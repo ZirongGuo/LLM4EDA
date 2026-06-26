@@ -1,0 +1,112 @@
+## 模块名称
+riscv_mmu (RISC-V Memory Management Unit)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 内存管理单元模块，负责虚实地址转换和内存访问权限检查。管理指令缓存和数据缓存的 MMU 接口，支持 SV32 页表转换（两级页表），处理页面故障、访问权限检查和 TLB 刷新。可选支持 Supervisor 模式和 MMU 功能。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| priv_d_i | 1:0 | input | 数据访问特权级 |
+| sum_i | 1 | input | Supervisor 用户内存访问使能 |
+| mxr_i | 1 | input | 可执行可读标志 |
+| flush_i | 1 | input | TLB 刷新请求 |
+| satp_i | 31:0 | input | SATP 寄存器值 |
+| fetch_in_rd_i | 1 | input | 取指读请求 |
+| fetch_in_flush_i | 1 | input | 取指刷新请求 |
+| fetch_in_invalidate_i | 1 | input | 取指无效化请求 |
+| fetch_in_pc_i | 31:0 | input | 取指 PC 值（虚拟地址） |
+| fetch_in_priv_i | 1:0 | input | 取指特权级 |
+| fetch_out_accept_i | 1 | input | 下游接受标志 |
+| fetch_out_valid_i | 1 | input | 下游有效标志 |
+| fetch_out_error_i | 1 | input | 下游错误标志 |
+| fetch_out_inst_i | 31:0 | input | 下游返回指令 |
+| lsu_in_addr_i | 31:0 | input | LSU 访问地址 |
+| lsu_in_data_wr_i | 31:0 | input | LSU 写数据 |
+| lsu_in_rd_i | 1 | input | LSU 读请求 |
+| lsu_in_wr_i | 1 | input | LSU 写请求 |
+| lsu_in_cacheable_i | 1 | input | LSU 可缓存标志 |
+| lsu_in_req_tag_i | 7:0 | input | LSU 请求标签 |
+| lsu_in_invalidate_i | 1 | input | LSU 无效化请求 |
+| lsu_in_writeback_i | 1 | input | LSU 写回请求 |
+| lsu_in_flush_i | 1 | input | LSU 刷新请求 |
+| lsu_out_data_rd_i | 31:0 | input | 下游读数据 |
+| lsu_out_accept_i | 1 | input | 下游接受标志 |
+| lsu_out_ack_i | 1 | input | 下游应答标志 |
+| lsu_out_error_i | 1 | input | 下游错误标志 |
+| lsu_out_resp_tag_i | 7:0 | input | 下游响应标签 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| fetch_in_accept_o | 1 | output | 取指接受标志 |
+| fetch_in_valid_o | 1 | output | 取指有效标志 |
+| fetch_in_error_o | 1 | output | 取指错误标志 |
+| fetch_in_inst_o | 31:0 | output | 取指返回指令 |
+| fetch_out_rd_o | 1 | output | 指令缓存读请求（物理地址） |
+| fetch_out_flush_o | 1 | output | 指令缓存刷新请求 |
+| fetch_out_invalidate_o | 1 | output | 指令缓存无效化请求 |
+| fetch_out_pc_o | 31:0 | output | 指令缓存物理地址 |
+| fetch_in_fault_o | 1 | output | 取指页故障标志 |
+| lsu_in_data_rd_o | 31:0 | output | LSU 读数据（物理地址访问后） |
+| lsu_in_accept_o | 1 | output | LSU 接受标志 |
+| lsu_in_ack_o | 1 | output | LSU 应答标志 |
+| lsu_in_error_o | 1 | output | LSU 错误标志 |
+| lsu_in_resp_tag_o | 7:0 | output | LSU 响应标签 |
+| lsu_out_addr_o | 31:0 | output | 数据缓存物理地址 |
+| lsu_out_data_wr_o | 31:0 | output | 数据缓存写数据 |
+| lsu_out_rd_o | 1 | output | 数据缓存读请求 |
+| lsu_out_wr_o | 1 | output | 数据缓存写请求 |
+| lsu_out_cacheable_o | 1 | output | 数据缓存可缓存标志 |
+| lsu_out_req_tag_o | 7:0 | output | 数据缓存请求标签 |
+| lsu_out_invalidate_o | 1 | output | 数据缓存无效化请求 |
+| lsu_out_writeback_o | 1 | output | 数据缓存写回请求 |
+| lsu_out_flush_o | 1 | output | 数据缓存刷新请求 |
+| lsu_in_load_fault_o | 1 | output | 加载页故障标志 |
+| lsu_in_store_fault_o | 1 | output | 存储页故障标志 |
+
+## 功能说明
+
+### 1. SV32 页表转换
+- 支持两级页表（MMU_LEVELS=2）
+- 页表索引位宽 10 位（MMU_PTIDXBITS=10）
+- 页表项大小 4 字节（MMU_PTESIZE=4）
+- 页面大小 4KB（MMU_PGSHIFT=12）
+- 虚拟地址位宽 32 位
+
+### 2. 取指路径 MMU
+- 将 Fetch 虚拟地址转换为物理地址
+- 检查取指权限（可执行权限）
+- 处理取指页故障
+- 管理指令缓存接口
+
+### 3. 数据路径 MMU
+- 将 LSU 虚拟地址转换为物理地址
+- 检查加载/存储权限
+- 处理加载/存储页故障
+- 管理数据缓存接口
+- 转发 LSU 请求标签
+
+### 4. 权限检查
+- 根据特权级（M/S/U）检查访问权限
+- 支持 SUM（Supervisor User Memory）控制
+- 支持 MXR（可执行可读）控制
+- 检查页表项权限位（Present、Read、Write、Exec、User、Global）
+
+### 5. TLB 管理
+- 支持 TLB 刷新（flush_i）
+- 支持缓存无效化
+- 支持缓存写回
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_mmu.v

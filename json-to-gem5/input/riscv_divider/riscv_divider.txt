@@ -1,0 +1,59 @@
+## 模块名称
+riscv_divider (RISC-V Divider)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 除法器模块，支持有符号和无符号除法及余数运算。操作包括 DIV、DIVU、REM、REMU。该模块是一个多周期时序模块，在多个时钟周期内完成除法运算，并通过 writeback_valid_o 信号指示运算完成。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| opcode_valid_i | 1 | input | 操作码有效标志 |
+| opcode_opcode_i | 31:0 | input | 指令操作码 |
+| opcode_pc_i | 31:0 | input | 指令 PC 值 |
+| opcode_invalid_i | 1 | input | 非法指令标志 |
+| opcode_rd_idx_i | 4:0 | input | 目标寄存器索引 |
+| opcode_ra_idx_i | 4:0 | input | 源操作数 A 寄存器索引 |
+| opcode_rb_idx_i | 4:0 | input | 源操作数 B 寄存器索引 |
+| opcode_ra_operand_i | 31:0 | input | 源操作数 A 值（被除数） |
+| opcode_rb_operand_i | 31:0 | input | 源操作数 B 值（除数） |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| writeback_valid_o | 1 | output | 写回有效标志（运算完成） |
+| writeback_value_o | 31:0 | output | 写回结果值（商或余数） |
+
+## 功能说明
+
+### 1. 除法运算
+- DIV: 有符号整数除法
+- DIVU: 无符号整数除法
+- REM: 有符号整数余数
+- REMU: 无符号整数余数
+
+### 2. 多周期执行
+- 除法运算需要多个时钟周期完成
+- 内部包含状态机控制运算进度
+- 运算完成后通过 writeback_valid_o 通知 Issue 单元
+
+### 3. 特殊值处理
+- 除数为 0 时：商为全 1，余数为被除数
+- 有符号除法溢出时：返回有符号最小值
+
+### 4. 写回接口
+- 运算完成后输出 writeback_valid_o=1 有效
+- 通过 writeback_value_o 输出计算结果
+- 写回数据经 Issue 单元写入寄存器文件
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_divider.v

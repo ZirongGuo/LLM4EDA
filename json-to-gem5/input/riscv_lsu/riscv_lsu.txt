@@ -1,0 +1,92 @@
+## 模块名称
+riscv_lsu (RISC-V Load Store Unit)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V 加载存储单元模块，负责处理所有访存指令（LB、LH、LW、LBU、LHU、LWU、SB、SH、SW）。模块管理地址生成、数据对齐、访问大小扩展、写缓冲以及存储转发。通过 MMU 接口与内存系统通信，输出写回结果给 Issue 单元。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| opcode_valid_i | 1 | input | 操作码有效标志 |
+| opcode_opcode_i | 31:0 | input | 指令操作码 |
+| opcode_pc_i | 31:0 | input | 指令 PC 值 |
+| opcode_invalid_i | 1 | input | 非法指令标志 |
+| opcode_rd_idx_i | 4:0 | input | 目标寄存器索引 |
+| opcode_ra_idx_i | 4:0 | input | 源操作数 A 寄存器索引 |
+| opcode_rb_idx_i | 4:0 | input | 源操作数 B 寄存器索引 |
+| opcode_ra_operand_i | 31:0 | input | 源操作数 A 值（基址） |
+| opcode_rb_operand_i | 31:0 | input | 源操作数 B 值（存储数据或偏移） |
+| mem_data_rd_i | 31:0 | input | 内存读数据（从 MMU） |
+| mem_accept_i | 1 | input | 内存接受标志 |
+| mem_ack_i | 1 | input | 内存应答标志 |
+| mem_error_i | 1 | input | 内存错误标志 |
+| mem_resp_tag_i | 7:0 | input | 内存响应标签 |
+| mem_load_fault_i | 1 | input | 加载页故障标志 |
+| mem_store_fault_i | 1 | input | 存储页故障标志 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| mem_addr_o | 31:0 | output | 内存访问地址 |
+| mem_data_wr_o | 31:0 | output | 内存写数据 |
+| mem_rd_o | 1 | output | 内存读请求 |
+| mem_wr_o | 1 | output | 内存写请求 |
+| mem_cacheable_o | 1 | output | 可缓存标志 |
+| mem_req_tag_o | 7:0 | output | 请求标签 |
+| mem_invalidate_o | 1 | output | 缓存无效化请求 |
+| mem_writeback_o | 1 | output | 缓存写回请求 |
+| mem_flush_o | 1 | output | 缓存刷新请求 |
+| writeback_valid_o | 1 | output | 写回有效标志 |
+| writeback_value_o | 31:0 | output | 写回结果值（加载数据） |
+| writeback_exception_o | 5:0 | output | 写回异常类型 |
+| stall_o | 1 | output | 流水线暂停标志 |
+
+## 功能说明
+
+### 1. 加载指令处理
+- LB: 加载字节（有符号扩展）
+- LH: 加载半字（有符号扩展）
+- LW: 加载字（32 位）
+- LBU: 加载字节（无符号扩展）
+- LHU: 加载半字（无符号扩展）
+- LWU: 加载字（无符号，RV64，32 位时同 LW）
+
+### 2. 存储指令处理
+- SB: 存储字节
+- SH: 存储半字
+- SW: 存储字
+
+### 3. 地址计算
+- 计算有效地址：base + offset（来自 rs1 + 立即数）
+- 生成访存地址到 mem_addr_o
+- 检测地址对齐错误
+
+### 4. MMU 接口
+- 通过 MMU 模块访问内存系统
+- 管理读写请求、应答和错误处理
+- 处理加载页故障和存储页故障
+- 数据大小扩展和对齐
+
+### 5. 写回与异常
+- 加载数据通过 writeback_value_o 写回
+- 检测到异常时通过 writeback_exception_o 上报
+- 存储指令不产生写回值，只产生异常
+- 当处于忙状态时通过 stall_o 暂停流水线
+
+### 6. 缓存一致性
+- 支持 cacheable 标志位
+- 支持缓存无效化、写回和刷新操作
+- 处理请求标签用于乱序完成跟踪
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_lsu.v

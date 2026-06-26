@@ -1,0 +1,64 @@
+## 模块名称
+riscv_trace_sim (RISC-V Trace and Simulation)
+
+## 逻辑类型
+组合逻辑（子模块）
+
+## 功能概述
+RISC-V 追踪仿真模块，提供指令执行追踪功能。用于调试和验证，记录每条指令的执行信息，包括 PC、指令、寄存器值等。通过 CSR 接口与仿真控制寄存器交互，支持仿真退出和字符输出。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| clk_i | 1 | input | 时钟信号 |
+| rst_i | 1 | input | 复位信号 |
+| csr_ren_i | 1 | input | CSR 读使能 |
+| csr_raddr_i | 11:0 | input | CSR 读地址 |
+| csr_wen_i | 1 | input | CSR 写使能 |
+| csr_waddr_i | 11:0 | input | CSR 写地址 |
+| csr_wdata_i | 31:0 | input | CSR 写数据 |
+| valid_i | 1 | input | 指令有效标志 |
+| instr_i | 31:0 | input | 指令操作码 |
+| pc_i | 31:0 | input | 指令 PC 值 |
+| rd_idx_i | 4:0 | input | 目标寄存器索引 |
+| rd_data_i | 31:0 | input | 目标寄存器写数据 |
+| ra_idx_i | 4:0 | input | 源操作数 A 索引 |
+| ra_data_i | 31:0 | input | 源操作数 A 值 |
+| rb_idx_i | 4:0 | input | 源操作数 B 索引 |
+| rb_data_i | 31:0 | input | 源操作数 B 值 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| csr_rdata_o | 31:0 | output | CSR 读数据 |
+| sim_exit_o | 1 | output | 仿真退出标志 |
+| sim_putchar_o | 7:0 | output | 仿真字符输出（ASCII） |
+
+## 功能说明
+
+### 1. 指令追踪
+- 记录每条已提交指令的执行信息
+- 输出指令 PC、指令码、操作数值和目标寄存器值
+- 支持指令执行追踪调试
+
+### 2. 仿真控制（SIM_CTRL CSR）
+- 通过 CSR_SIM_CTRL（地址 12'h8b2）控制仿真
+- 写 CSR_SIM_CTRL 的位 [24] 为 1 时输出字符（putchar）
+- 写 CSR_SIM_CTRL 时触发仿真退出
+- 用于 RISC-V 测试框架的仿真控制
+
+### 3. 仿真退出
+- 当检测到仿真退出条件时置位 sim_exit_o
+- 用于 Testbench 的自动结束判断
+
+### 4. 字符输出
+- 当 putchar 操作时输出 ASCII 字符
+- 用于模拟 UART 输出
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_trace_sim.v

@@ -1,0 +1,80 @@
+## 模块名称
+riscv_csr_regfile (RISC-V CSR Register File)
+
+## 逻辑类型
+时序逻辑（子模块）
+
+注意：作为子模块，其 process() 调用由顶层模块每个周期触发，代表一个时钟上升沿。不需要 clk 输入端口和时钟边沿检测逻辑。
+
+## 功能概述
+RISC-V CSR 寄存器文件模块，存储和管理所有控制与状态寄存器（CSR）。支持读操作（通过 csr_ren_i 和 csr_raddr_i）和写操作（通过 csr_waddr_i 和 csr_wdata_i），处理异常和中断事件以更新 CSR 状态，输出当前特权级、状态寄存器值、SATP 值和中断向量。内部包含完整的 RV32 CSR 寄存器组。
+
+## 端口定义
+
+### 输入信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| ext_intr_i | 1 | input | 外部中断输入 |
+| timer_intr_i | 1 | input | 定时器中断输入 |
+| cpu_id_i | 31:0 | input | CPU ID |
+| misa_i | 31:0 | input | MISA 寄存器值（由参数生成） |
+| csr_ren_i | 1 | input | CSR 读使能 |
+| csr_raddr_i | 11:0 | input | CSR 读地址 |
+| exception_i | 5:0 | input | 异常类型 |
+| exception_pc_i | 31:0 | input | 异常 PC 值 |
+| exception_addr_i | 31:0 | input | 异常地址值 |
+| csr_waddr_i | 11:0 | input | CSR 写地址 |
+| csr_wdata_i | 31:0 | input | CSR 写数据 |
+
+### 输出信号
+| 端口名 | 位宽 | 方向 | 描述 |
+|--------|------|------|------|
+| csr_rdata_o | 31:0 | output | CSR 读数据 |
+| csr_branch_o | 1 | output | CSR 分支请求（异常/中断跳转） |
+| csr_target_o | 31:0 | output | CSR 分支目标地址 |
+| priv_o | 1:0 | output | 当前特权级 |
+| status_o | 31:0 | output | 状态寄存器值（mstatus/sstatus） |
+| satp_o | 31:0 | output | SATP 寄存器值 |
+| interrupt_o | 31:0 | output | 中断向量（已屏蔽的中断请求） |
+
+## 功能说明
+
+### 1. CSR 寄存器组
+- Machine 模式寄存器: mstatus, misa, mtvec, mepc, mcause, mtval, mie, mip, mscratch, mcycle, mcycle_h, medeleg, mideleg
+- Supervisor 模式寄存器: sepc, stvec, scause, stval, satp, sscratch, sstatus (mstatus 的子集)
+- Timer 相关寄存器: mtimecmp, mtime
+- 调试寄存器: dscratch, sim_ctrl
+- 只读寄存器: mhartid, mtime, mtimeh
+
+### 2. 读操作
+- 当 csr_ren_i 有效时，根据 csr_raddr_i 读取对应 CSR 值
+- 支持 MIP/SIP 读取时的自动更新
+- 读数据通过 csr_rdata_o 输出
+
+### 3. 写操作
+- 当 csr_waddr_i 非零时，将 csr_wdata_i 写入对应 CSR
+- 只读寄存器写操作会被忽略
+- 写掩码用于限制可写位
+
+### 4. 异常和中断处理
+- 异常时保存返回地址到 MEPC/SEPC
+- 设置 MCAUSE/SCAUSE 为异常原因
+- 设置 MTVAL/STVAL 为异常辅助信息
+- 中断时保存返回地址，设置中断原因
+- 产生 csr_branch_o 和 csr_target_o 用于跳转
+
+### 5. 中断屏蔽与优先级
+- 根据 mstatus.MIE/SIE 屏蔽中断
+- 根据 mideleg 判断中断委托到 S 模式
+- 输出来自已屏蔽的中断向量 interrupt_o
+
+### 6. 特权级管理
+- 输出当前特权级 priv_o
+- 异常/ERET 时自动切换特权级
+- 支持 M/S/U 三种模式
+
+## 子模块调用
+无子模块调用。
+
+## Verilog 关联
+riscv_csr_regfile.v
