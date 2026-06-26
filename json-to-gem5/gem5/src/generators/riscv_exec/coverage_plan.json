@@ -1,0 +1,60 @@
+{
+  "module_type": "sequential",
+  "coverage_groups": [
+    {
+      "id": "CG_EXEC_ALU",
+      "name": "alu_operations",
+      "description": "Cover all ALU operation types via both I-type (0x13) and R-type (0x33) paths",
+      "transactions": 7,
+      "constraint": "ADD, SUB, XOR via register (0x33), ADDI, XORI via immediate (0x13), plus LUI, AUIPC, FENCE",
+      "testpoint_ids": ["EXEC_TP001", "EXEC_TP002", "EXEC_TP013", "EXEC_TP014", "EXEC_TP015", "EXEC_TP023", "EXEC_TP024", "EXEC_TP022"]
+    },
+    {
+      "id": "CG_EXEC_BRANCH",
+      "name": "branch_instructions",
+      "description": "Cover all 6 branch types (BEQ, BNE, BLT, BGE, BLTU, BGEU) with taken/not-taken paths",
+      "transactions": 7,
+      "constraint": "each funct3 value (0,1,4,5,6,7) must be exercised with both taken and not-taken outcomes",
+      "testpoint_ids": ["EXEC_TP006", "EXEC_TP007", "EXEC_TP008", "EXEC_TP009", "EXEC_TP010", "EXEC_TP011", "EXEC_TP012"]
+    },
+    {
+      "id": "CG_EXEC_JUMP",
+      "name": "jump_instructions",
+      "description": "Cover JAL, JALR with call/return/branch semantics",
+      "transactions": 3,
+      "constraint": "JAL sets is_jmp, JALR with rd!=0 sets is_call, JALR with rs1=x1/ra sets is_ret",
+      "testpoint_ids": ["EXEC_TP003", "EXEC_TP004", "EXEC_TP005"]
+    },
+    {
+      "id": "CG_EXEC_MEMORY",
+      "name": "memory_access",
+      "description": "Cover load and store address computation via ALU ADD",
+      "transactions": 2,
+      "constraint": "load (opcode 0x03) and store (opcode 0x23) must both compute address via alu ADD",
+      "testpoint_ids": ["EXEC_TP016", "EXEC_TP017"]
+    },
+    {
+      "id": "CG_EXEC_TRAP",
+      "name": "trap_handling",
+      "description": "Cover invalid instruction, ECALL, and EBREAK trap generation",
+      "transactions": 3,
+      "constraint": "each trap source must produce branch_request=1, source=TRAP, branch_d_request=1",
+      "testpoint_ids": ["EXEC_TP018", "EXEC_TP019", "EXEC_TP020"]
+    },
+    {
+      "id": "CG_EXEC_CONTROL",
+      "name": "pipeline_control",
+      "description": "Cover hold stall and no-valid-instruction paths",
+      "transactions": 2,
+      "constraint": "hold_i must preserve outputs, no opcode_valid must zero all outputs",
+      "testpoint_ids": ["EXEC_TP021", "EXEC_TP025"]
+    }
+  ],
+  "coverage_model": {
+    "opcode_coverage": "all opcodes (0x03, 0x0F, 0x13, 0x17, 0x23, 0x33, 0x37, 0x63, 0x67, 0x6F, 0x73) must be exercised",
+    "branch_condition_coverage": "each branch comparison (eq, ne, lt, ge, ltu, geu) with true and false operands",
+    "alu_submodule_coverage": "riscv_alu submodule must be invoked for ADD (load/store), I-type ALU, and R-type ALU operations",
+    "immediate_coverage": "all 5 immediate types (I, S, B, U, J) must be correctly sign-extended",
+    "trap_coverage": "invalid, ECALL, EBREAK must produce correct trap outputs (branch_request, source=TRAP)"
+  }
+}

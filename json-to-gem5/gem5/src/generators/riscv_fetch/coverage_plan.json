@@ -1,0 +1,59 @@
+{
+  "module_type": "sequential",
+  "coverage_groups": [
+    {
+      "id": "CG_FETCH_BASIC",
+      "name": "basic_fetch_flow",
+      "description": "Cover the complete fetch pipeline: request→accept→data→decode",
+      "transactions": 5,
+      "constraint": "each FSM state (idle, req_sent, wait_data, pending_ready) must be entered and exited",
+      "testpoint_ids": ["FETCH_TP001", "FETCH_TP002", "FETCH_TP003", "FETCH_TP004", "FETCH_TP011"]
+    },
+    {
+      "id": "CG_FETCH_BRANCH",
+      "name": "branch_handling",
+      "description": "Cover branch redirect: target PC update, privilege capture, squash_decode, FSM reset",
+      "transactions": 3,
+      "constraint": "branch while idle, while pending_ready, with privilege change",
+      "testpoint_ids": ["FETCH_TP005", "FETCH_TP010", "FETCH_TP013"]
+    },
+    {
+      "id": "CG_FETCH_FLUSH",
+      "name": "flush_invalidate",
+      "description": "Cover invalidate path: icache_flush, icache_invalidate, FSM reset",
+      "transactions": 2,
+      "constraint": "invalidate while idle, invalidate while waiting for data",
+      "testpoint_ids": ["FETCH_TP006", "FETCH_TP014"]
+    },
+    {
+      "id": "CG_FETCH_ERROR",
+      "name": "error_handling",
+      "description": "Cover icache error and page fault responses",
+      "transactions": 3,
+      "constraint": "error, page fault, and accept on fault (PC should not advance)",
+      "testpoint_ids": ["FETCH_TP007", "FETCH_TP008", "FETCH_TP009"]
+    },
+    {
+      "id": "CG_FETCH_STALL",
+      "name": "stall_behavior",
+      "description": "Cover decode stall: pending_ready persists when decode not ready",
+      "transactions": 1,
+      "constraint": "fetch_accept_i=0 must hold instruction in pending_ready",
+      "testpoint_ids": ["FETCH_TP012"]
+    },
+    {
+      "id": "CG_FETCH_CONCURRENT",
+      "name": "concurrent_events",
+      "description": "Cover icache accept+valid same cycle for back-to-back throughput",
+      "transactions": 1,
+      "constraint": "icache_accept_i and icache_valid_i both high in same cycle",
+      "testpoint_ids": ["FETCH_TP015"]
+    }
+  ],
+  "coverage_model": {
+    "fsm_state_coverage": "all 3 FSM states (req_sent, wait_data, pending_ready) must be entered",
+    "fsm_transition_coverage": "all legal transitions between states must be exercised",
+    "output_signal_coverage": "every output port must be toggled (fetch_valid, fetch_instr, fetch_pc, fetch_fault_*, icache_*, squash_decode)",
+    "priority_coverage": "priority ordering: invalidate > branch > icache_data > output > new_request"
+  }
+}

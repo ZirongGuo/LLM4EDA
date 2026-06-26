@@ -1,0 +1,5 @@
+Import('*')
+
+SimObject('riscv_divider.py', sim_objects=['RiscvDivider'])
+Source('riscv_divider.cc')
+SConscript('riscv_divider_test/SConscript')

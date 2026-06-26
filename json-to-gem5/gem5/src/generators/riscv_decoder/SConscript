@@ -1,0 +1,3 @@
+Import('*')
+
+Source('riscv_decoder.cc')

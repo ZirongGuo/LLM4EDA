@@ -1,0 +1,142 @@
+{
+  "module_type": "sequential",
+  "test_vectors": [
+    {
+      "id": "FETCH_TP001",
+      "desc": "Initial idle state: first process() sends icache read request for PC=0x80000000",
+      "inputs": {},
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP002",
+      "desc": "ICache accepts the read request, state transitions from req_sent to wait_data",
+      "inputs": {
+        "setIcacheAcceptI": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP003",
+      "desc": "ICache returns valid instruction (ADDI x1, x0, 1 = 0x00100093), transitions to pending_ready",
+      "inputs": {
+        "setIcacheValidI": 1,
+        "setIcacheInstI": 1048595
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP004",
+      "desc": "Decode accepts instruction, pending_ready cleared, PC advances from 0x80000000 to 0x80000004",
+      "inputs": {
+        "setFetchAcceptI": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP005",
+      "desc": "Branch request: PC updated to 0x80001000, squash_decode_o=1, FSM registers reset",
+      "inputs": {
+        "setBranchRequestI": 1,
+        "setBranchPcI": 2147484672
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP006",
+      "desc": "Invalidate (IFENCE): icache_flush=1, icache_invalidate=1, all FSM state cleared",
+      "inputs": {
+        "setFetchInvalidateI": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP007",
+      "desc": "ICache returns error: pending_fault_fetch flagged, instruction not output on fetch_instr_o",
+      "inputs": {
+        "setIcacheValidI": 1,
+        "setIcacheErrorI": 1,
+        "setIcacheInstI": 1048595
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP008",
+      "desc": "ICache page fault: pending_fault_page flagged",
+      "inputs": {
+        "setIcacheValidI": 1,
+        "setIcachePageFaultI": 1,
+        "setIcacheInstI": 1048595
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP009",
+      "desc": "Decode accepts fault: PC does NOT advance (fault leaves PC unchanged, exception handled via branch)",
+      "inputs": {
+        "setFetchAcceptI": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP010",
+      "desc": "Branch with privilege change to S-mode (priv=1): icache_priv reflects new privilege",
+      "inputs": {
+        "setBranchRequestI": 1,
+        "setBranchPcI": 2147484160,
+        "setBranchPrivI": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP011",
+      "desc": "Back-to-back fetch: icache accept+valid+decode accept held high for 3 cycles, 2 instructions complete",
+      "inputs": {
+        "setFetchAcceptI": 1,
+        "setIcacheAcceptI": 1,
+        "setIcacheValidI": 1,
+        "setIcacheInstI": 1048595
+      },
+      "wait_cycles": 3
+    },
+    {
+      "id": "FETCH_TP012",
+      "desc": "Decode stall: fetch_accept_i=0 keeps instruction in pending_ready, PC not advancing",
+      "inputs": {
+        "setFetchAcceptI": 0,
+        "setIcacheAcceptI": 1,
+        "setIcacheValidI": 1,
+        "setIcacheInstI": 1048595
+      },
+      "wait_cycles": 3
+    },
+    {
+      "id": "FETCH_TP013",
+      "desc": "Branch overrides pending_ready instruction: branch PC takes priority over pending instruction",
+      "inputs": {
+        "setBranchRequestI": 1,
+        "setBranchPcI": 4096,
+        "setBranchPrivI": 3
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP014",
+      "desc": "Invalidate while waiting for icache: FSM reset (req_sent/wait_data/pending_ready all cleared)",
+      "inputs": {
+        "setFetchInvalidateI": 1,
+        "setIcacheAcceptI": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "FETCH_TP015",
+      "desc": "ICache accept+valid in same cycle after idle: request sent, accepted, data returned in sequence",
+      "inputs": {
+        "setIcacheAcceptI": 1,
+        "setIcacheValidI": 1,
+        "setIcacheInstI": 1048595
+      },
+      "wait_cycles": 1
+    }
+  ]
+}

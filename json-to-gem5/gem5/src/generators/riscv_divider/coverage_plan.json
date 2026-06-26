@@ -1,0 +1,44 @@
+{
+  "coverage_plan": [
+    {
+      "feature": "DIV instruction (signed quotient)",
+      "covered_by": ["DIV_TP001", "DIV_TP005", "DIV_TP006", "DIV_TP011", "DIV_TP014"],
+      "status": "covered"
+    },
+    {
+      "feature": "DIVU instruction (unsigned quotient)",
+      "covered_by": ["DIV_TP002", "DIV_TP012"],
+      "status": "covered"
+    },
+    {
+      "feature": "REM instruction (signed remainder)",
+      "covered_by": ["DIV_TP003", "DIV_TP007", "DIV_TP013"],
+      "status": "covered"
+    },
+    {
+      "feature": "REMU instruction (unsigned remainder)",
+      "covered_by": ["DIV_TP004", "DIV_TP015"],
+      "status": "covered"
+    },
+    {
+      "feature": "Signed overflow detection",
+      "covered_by": ["DIV_TP008", "DIV_TP018"],
+      "status": "covered"
+    },
+    {
+      "feature": "Division by zero",
+      "covered_by": ["DIV_TP009", "DIV_TP010"],
+      "status": "covered"
+    },
+    {
+      "feature": "Invalid opcode handling",
+      "covered_by": ["DIV_TP016"],
+      "status": "covered"
+    },
+    {
+      "feature": "Multi-cycle computation (32 iterations)",
+      "covered_by": ["DIV_TP001", "DIV_TP002", "DIV_TP003", "DIV_TP004"],
+      "status": "covered"
+    }
+  ]
+}

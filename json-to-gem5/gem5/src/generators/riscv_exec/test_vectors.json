@@ -1,0 +1,324 @@
+{
+  "module_type": "sequential",
+  "test_vectors": [
+    {
+      "id": "EXEC_TP001",
+      "desc": "LUI x5, 0x12345: writeback = imm_u = 0x12345000",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 305398455,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRdIdx": 5
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP002",
+      "desc": "AUIPC x6, 0x10000: writeback = PC + 0x10000000 = 0x90000000 (at PC=0x80000000)",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 268439319,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRdIdx": 6
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP003",
+      "desc": "JAL x0, +0 (jump to self): branch_request=1, is_jmp=1, writeback=PC+4",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 111,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRdIdx": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP004",
+      "desc": "JALR x1, x5, 0 (jalr ra, t0): is_call=1 (rd=1!=0), target = t0 & ~1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 164495,
+        "setOpcodePc": 2147483652,
+        "setOpcodeRdIdx": 1,
+        "setOpcodeRaIdx": 5,
+        "setOpcodeRaOperand": 2147484672
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP005",
+      "desc": "JALR x0, x1, 0 (jr ra): is_ret=1 (rs1=x1=1), target = ra & ~1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 32899,
+        "setOpcodePc": 2147483656,
+        "setOpcodeRdIdx": 0,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRaOperand": 2147484160
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP006",
+      "desc": "BEQ x0, x0, +0 (always taken): branch_request=1, is_taken=1, target=PC+0",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 99,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 0,
+        "setOpcodeRbIdx": 0,
+        "setOpcodeRaOperand": 0,
+        "setOpcodeRbOperand": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP007",
+      "desc": "BEQ x1, x0, +0 (not taken, x1=5 != x0=0): is_not_taken=1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 99,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 0,
+        "setOpcodeRaOperand": 5,
+        "setOpcodeRbOperand": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP008",
+      "desc": "BNE x1, x0, +0 (taken, funct3=1, x1=5!=0): is_taken=1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 4195,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 0,
+        "setOpcodeRaOperand": 5,
+        "setOpcodeRbOperand": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP009",
+      "desc": "BLT x1, x2, +0 (taken, funct3=4, signed -1 < 1): writeback=0, branch taken",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 16483,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 4294967295,
+        "setOpcodeRbOperand": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP010",
+      "desc": "BGE x1, x2, +0 (taken, funct3=5, signed 3 >= 3): is_taken=1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 20579,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 3,
+        "setOpcodeRbOperand": 3
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP011",
+      "desc": "BLTU x1, x2, +0 (taken, funct3=6, unsigned 1 < 2): is_taken=1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 24675,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 1,
+        "setOpcodeRbOperand": 2
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP012",
+      "desc": "BGEU x1, x2, +0 (not taken, funct3=7, unsigned 1 < 2): is_not_taken=1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 28771,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 1,
+        "setOpcodeRbOperand": 2
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP013",
+      "desc": "ADDI x1, x0, 1: writeback = 0 + 1 = 1 (immediate I-type ALU)",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 1048595,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRdIdx": 1,
+        "setOpcodeRaIdx": 0,
+        "setOpcodeRaOperand": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP014",
+      "desc": "ADD x5, x1, x2: writeback = 10 + 20 = 30, funct3=0, funct7=0",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 131139,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRdIdx": 5,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 10,
+        "setOpcodeRbOperand": 20
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP015",
+      "desc": "SUB x5, x1, x2: writeback = 10 - 20 = -10 (0xFFFFFFF6), funct7=0x20",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 1073873075,
+        "setOpcodePc": 2147483648,
+        "setOpcodeRdIdx": 5,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 10,
+        "setOpcodeRbOperand": 20
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP016",
+      "desc": "LW x1, 0(x5) (load): ALU computes address = rs1 + imm_i = 1000 + 0 = 1000",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 172179,
+        "setOpcodePc": 2147483652,
+        "setOpcodeRdIdx": 1,
+        "setOpcodeRaIdx": 5,
+        "setOpcodeRaOperand": 1000
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP017",
+      "desc": "SW x4, 8(x5) (store): ALU computes address = rs1 + imm_s = 2000 + 8 = 2008",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 4364451,
+        "setOpcodePc": 2147483656,
+        "setOpcodeRaIdx": 5,
+        "setOpcodeRbIdx": 4,
+        "setOpcodeRaOperand": 2000,
+        "setOpcodeRbOperand": 42
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP018",
+      "desc": "ECALL: branch_request=1, source=TRAP(3), branch_d_request=1, trap to M-mode (priv=3)",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 115,
+        "setOpcodePc": 2147483660
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP019",
+      "desc": "EBREAK: branch_request=1, source=TRAP(3), branch_d_request=1",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 1048691,
+        "setOpcodePc": 2147483664
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP020",
+      "desc": "Invalid instruction: opcode_invalid=1, branch_d_request=1 for trap",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 131139,
+        "setOpcodePc": 2147483668,
+        "setOpcodeInvalid": 1
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP021",
+      "desc": "Hold asserted: pipeline stalls, all outputs retain previous values (no change)",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 131139,
+        "setOpcodePc": 2147483672,
+        "setOpcodeRaOperand": 100,
+        "setOpcodeRbOperand": 200,
+        "setHold": 1
+      },
+      "wait_cycles": 2
+    },
+    {
+      "id": "EXEC_TP022",
+      "desc": "FENCE (opcode=0x0F): no execution change, writeback_value=0",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 15,
+        "setOpcodePc": 2147483676
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP023",
+      "desc": "XOR x6, x1, x2: writeback = 1 XOR 2 = 3 (R-type, funct3=4)",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 2148051,
+        "setOpcodePc": 2147483680,
+        "setOpcodeRdIdx": 6,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRbIdx": 2,
+        "setOpcodeRaOperand": 1,
+        "setOpcodeRbOperand": 2
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP024",
+      "desc": "XORI x6, x1, 0xFF: writeback = 0xAAAA ^ 0xFF = 0xAA55 (I-type, funct3=4)",
+      "inputs": {
+        "setOpcodeValid": 1,
+        "setOpcodeOpcode": 117976438,
+        "setOpcodePc": 2147483684,
+        "setOpcodeRdIdx": 6,
+        "setOpcodeRaIdx": 1,
+        "setOpcodeRaOperand": 43690
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "EXEC_TP025",
+      "desc": "No valid instruction: all outputs default to 0, no ALU operation triggered",
+      "inputs": {
+        "setOpcodeValid": 0,
+        "setOpcodeOpcode": 131139,
+        "setOpcodePc": 2147483688
+      },
+      "wait_cycles": 1
+    }
+  ]
+}

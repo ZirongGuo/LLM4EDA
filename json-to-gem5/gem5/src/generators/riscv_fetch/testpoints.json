@@ -1,0 +1,124 @@
+{
+  "testpoints": [
+    {
+      "id": "FETCH_TP001",
+      "name": "initial_fetch_request",
+      "description": "Initial state: PC=0x80000000, priv=3. First process() sends icache read request.",
+      "group": "basic_flow",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP002",
+      "name": "icache_accepts_request",
+      "description": "ICache accepts the read request: req_sent→wait_data transition.",
+      "group": "basic_flow",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP003",
+      "name": "icache_returns_data",
+      "description": "ICache returns valid instruction data: wait_data→pending_ready transition.",
+      "group": "basic_flow",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP004",
+      "name": "decode_accepts_instruction",
+      "description": "Decode stage accepts the fetched instruction: pending_ready cleared, PC advances by 4.",
+      "group": "basic_flow",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP005",
+      "name": "branch_request",
+      "description": "Branch request from execution: PC updated to target, squash_decode=1, FSM reset.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP006",
+      "name": "invalidate_ifence",
+      "description": "Invalidate (IFENCE/SFENCE): icache_flush=1, icache_invalidate=1, FSM reset.",
+      "group": "flush",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP007",
+      "name": "icache_error_response",
+      "description": "ICache returns error: fetch_fault_fetch flagged, instruction not stored.",
+      "group": "error",
+      "priority": "P0",
+      "dimension":"negative"
+    },
+    {
+      "id": "FETCH_TP008",
+      "name": "icache_page_fault",
+      "description": "ICache returns page fault: fetch_fault_page flagged.",
+      "group": "error",
+      "priority": "P0",
+      "dimension": "negative"
+    },
+    {
+      "id": "FETCH_TP009",
+      "name": "decode_accepts_fault",
+      "description": "Decode accepts fault: PC does NOT advance on fault (exception handler redirects via branch).",
+      "group": "error",
+      "priority": "P1",
+      "dimension": "edge"
+    },
+    {
+      "id": "FETCH_TP010",
+      "name": "branch_privilege_change",
+      "description": "Branch with privilege level change to S-mode (priv=1).",
+      "group": "branch",
+      "priority": "P1",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP011",
+      "name": "back_to_back_sequential_fetch",
+      "description": "Two instructions fetched back-to-back: PC increments by 4 each time.",
+      "group": "basic_flow",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "FETCH_TP012",
+      "name": "decode_stall",
+      "description": "Decode not ready (fetch_accept_i=0): instruction stays pending_ready, PC does not advance.",
+      "group": "stall",
+      "priority": "P1",
+      "dimension": "stall"
+    },
+    {
+      "id": "FETCH_TP013",
+      "name": "branch_overrides_pending_instruction",
+      "description": "Branch request while instruction is pending_ready: branch takes priority.",
+      "group": "branch",
+      "priority": "P1",
+      "dimension": "edge"
+    },
+    {
+      "id": "FETCH_TP014",
+      "name": "invalidate_while_waiting",
+      "description": "Invalidate received while waiting for icache data: FSM resets, new request sent.",
+      "group": "flush",
+      "priority": "P1",
+      "dimension": "edge"
+    },
+    {
+      "id": "FETCH_TP015",
+      "name": "icache_accept_and_valid_same_cycle",
+      "description": "ICache accepts request and returns data in same cycle: handled sequentially in process().",
+      "group": "basic_flow",
+      "priority": "P2",
+      "dimension": "edge"
+    }
+  ]
+}

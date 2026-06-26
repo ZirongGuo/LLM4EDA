@@ -1,0 +1,204 @@
+{
+  "testpoints": [
+    {
+      "id": "EXEC_TP001",
+      "name": "lui_instruction",
+      "description": "LUI: upper immediate loaded into rd, writeback_value = imm_u.",
+      "group": "alu_ops",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP002",
+      "name": "auipc_instruction",
+      "description": "AUIPC: PC + upper immediate written back.",
+      "group": "alu_ops",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP003",
+      "name": "jal_instruction",
+      "description": "JAL: jump and link, branch_request=1, writeback=PC+4, is_jmp=1.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP004",
+      "name": "jalr_call_instruction",
+      "description": "JALR: register jump with call semantics (rd!=0), branch_request=1, is_call=1.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP005",
+      "name": "jalr_return_instruction",
+      "description": "JALR with rs1=x1 (ra): return semantics, is_ret=1.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP006",
+      "name": "beq_taken",
+      "description": "BEQ: equal operands, branch taken, is_taken=1.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP007",
+      "name": "beq_not_taken",
+      "description": "BEQ: unequal operands, branch not taken, is_not_taken=1.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP008",
+      "name": "bne_taken",
+      "description": "BNE: unequal operands, branch taken, is_taken=1.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP009",
+      "name": "blt_signed_taken",
+      "description": "BLT: signed less-than true, branch taken.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP010",
+      "name": "bge_signed_taken",
+      "description": "BGE: signed greater-or-equal true, branch taken.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP011",
+      "name": "bltu_unsigned_taken",
+      "description": "BLTU: unsigned less-than true, branch taken.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP012",
+      "name": "bgeu_unsigned_not_taken",
+      "description": "BGEU: unsigned less-than false (not taken), branch not taken.",
+      "group": "branch",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP013",
+      "name": "addi_immediate",
+      "description": "ADDI: ADD immediate from I-type instruction, writeback=rs1+imm.",
+      "group": "alu_ops",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP014",
+      "name": "add_register",
+      "description": "ADD: register ADD, uses ALU with funct3=0 and funct7=0.",
+      "group": "alu_ops",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP015",
+      "name": "sub_register",
+      "description": "SUB: register SUB, uses ALU with funct3=0 and funct7[5]=1.",
+      "group": "alu_ops",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP016",
+      "name": "load_address_compute",
+      "description": "Load: computes address via ALU ADD (rs1 + imm_i) for memory access.",
+      "group": "memory",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP017",
+      "name": "store_address_compute",
+      "description": "Store: computes address via ALU ADD (rs1 + imm_s) for memory access.",
+      "group": "memory",
+      "priority": "P0",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP018",
+      "name": "ecall_system_trap",
+      "description": "ECALL: environment call, generates branch trap request.",
+      "group": "system",
+      "priority": "P0",
+      "dimension": "negative"
+    },
+    {
+      "id": "EXEC_TP019",
+      "name": "ebreak_breakpoint",
+      "description": "EBREAK: breakpoint, generates branch trap request.",
+      "group": "system",
+      "priority": "P0",
+      "dimension": "negative"
+    },
+    {
+      "id": "EXEC_TP020",
+      "name": "invalid_instruction_trap",
+      "description": "Invalid instruction: opcode_invalid=1, generates branch trap request.",
+      "group": "error",
+      "priority": "P0",
+      "dimension": "negative"
+    },
+    {
+      "id": "EXEC_TP021",
+      "name": "hold_stall",
+      "description": "Hold asserted: pipeline stalled, all outputs remain unchanged from previous cycle.",
+      "group": "stall",
+      "priority": "P0",
+      "dimension": "stall"
+    },
+    {
+      "id": "EXEC_TP022",
+      "name": "fence_nop",
+      "description": "FENCE: no execution changes, writeback=0.",
+      "group": "alu_ops",
+      "priority": "P2",
+      "dimension": "edge"
+    },
+    {
+      "id": "EXEC_TP023",
+      "name": "xor_register",
+      "description": "XOR: register XOR via ALU funct3=4.",
+      "group": "alu_ops",
+      "priority": "P1",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP024",
+      "name": "xori_immediate",
+      "description": "XORI: immediate XOR, funct3=4 on opcode 0x13.",
+      "group": "alu_ops",
+      "priority": "P1",
+      "dimension": "positive"
+    },
+    {
+      "id": "EXEC_TP025",
+      "name": "no_valid_instruction",
+      "description": "No valid instruction: all outputs default to 0, no ALU operation.",
+      "group": "basic",
+      "priority": "P1",
+      "dimension": "edge"
+    }
+  ]
+}

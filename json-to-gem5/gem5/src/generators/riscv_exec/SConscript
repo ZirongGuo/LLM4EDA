@@ -1,0 +1,5 @@
+Import('*')
+
+SimObject('riscv_exec.py', sim_objects=['RiscvExec'])
+Source('riscv_exec.cc')
+SConscript('riscv_exec_test/SConscript')

@@ -1,0 +1,6 @@
+Import('*')
+
+SimObject('RiscvFetch.py', sim_objects=['RiscvFetch'])
+Source('riscv_fetch.cc')
+SConscript('riscv_fetch_test/SConscript')
+DebugFlag('RiscvFetch')

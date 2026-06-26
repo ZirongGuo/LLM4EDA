@@ -1,0 +1,22 @@
+{
+  "testpoints": [
+    "TP001: DIV signed quotient",
+    "TP002: DIVU unsigned quotient",
+    "TP003: REM signed remainder",
+    "TP004: REMU unsigned remainder",
+    "TP005: DIV with negative dividend",
+    "TP006: DIV with negative divisor",
+    "TP007: REM with negative dividend",
+    "TP008: Signed overflow (INT32_MIN / -1)",
+    "TP009: Division by zero (quotient)",
+    "TP010: Division by zero (remainder)",
+    "TP011: Division with zero dividend",
+    "TP012: Maximum unsigned dividend",
+    "TP013: REM negative dividend",
+    "TP014: Larger dividend and divisor",
+    "TP015: REMU same value",
+    "TP016: Invalid funct3 handling",
+    "TP017: DIV negative dividend with positive result",
+    "TP018: REM overflow case"
+  ]
+}

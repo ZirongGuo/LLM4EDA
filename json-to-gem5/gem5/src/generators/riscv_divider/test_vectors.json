@@ -1,0 +1,203 @@
+{
+  "module_type": "sequential",
+  "test_vectors": [
+    {
+      "id": "DIV_TP001",
+      "desc": "DIV: signed 10 / 3 = 3 (funct3=0)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 10,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP002",
+      "desc": "DIVU: unsigned 10 / 3 = 3 (funct3=5, set opcode bits 14:12 = 101)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 13331,
+        "setOpcodeRaOperandI": 10,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP003",
+      "desc": "REM: signed 10 % 3 = 1 (funct3=6)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 15379,
+        "setOpcodeRaOperandI": 10,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP004",
+      "desc": "REMU: unsigned 10 % 3 = 1 (funct3=7)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 17427,
+        "setOpcodeRaOperandI": 10,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP005",
+      "desc": "DIV: signed -10 / 3 = -3 (0xFFFFFFFD)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 4294967286,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP006",
+      "desc": "DIV: signed 10 / -3 = -3 (0xFFFFFFFD)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 10,
+        "setOpcodeRbOperandI": 4294967293
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP007",
+      "desc": "REM: signed -10 % 3 = -1 (0xFFFFFFFF)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 15379,
+        "setOpcodeRaOperandI": 4294967286,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP008",
+      "desc": "DIV: signed overflow INT32_MIN / -1 = INT32_MIN (0x80000000)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 2147483648,
+        "setOpcodeRbOperandI": 4294967295
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "DIV_TP009",
+      "desc": "DIV: division by zero 5 / 0 = 0xFFFFFFFF",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 5,
+        "setOpcodeRbOperandI": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "DIV_TP010",
+      "desc": "REM: division by zero 5 % 0 = 5 (returns dividend)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 15379,
+        "setOpcodeRaOperandI": 5,
+        "setOpcodeRbOperandI": 0
+      },
+      "wait_cycles": 1
+    },
+    {
+      "id": "DIV_TP011",
+      "desc": "DIV: 0 / 7 = 0",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 0,
+        "setOpcodeRbOperandI": 7
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP012",
+      "desc": "DIVU: max unsigned 0xFFFFFFFF / 1 = 0xFFFFFFFF",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 13331,
+        "setOpcodeRaOperandI": 4294967295,
+        "setOpcodeRbOperandI": 1
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP013",
+      "desc": "REM: -7 % 3 = -1",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 15379,
+        "setOpcodeRaOperandI": 4294967289,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP014",
+      "desc": "DIV: 100 / 7 = 14",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 100,
+        "setOpcodeRbOperandI": 7
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP015",
+      "desc": "REMU: 0xFFFFFFFF / 0xFFFFFFFF remainder = 0",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 17427,
+        "setOpcodeRaOperandI": 4294967295,
+        "setOpcodeRbOperandI": 4294967295
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP016",
+      "desc": "Invalid funct3 (0x3) - should stay in IDLE, no writeback",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 8211,
+        "setOpcodeRaOperandI": 10,
+        "setOpcodeRbOperandI": 3
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP017",
+      "desc": "DIV: -128 / 2 = -64",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 51,
+        "setOpcodeRaOperandI": 4294967168,
+        "setOpcodeRbOperandI": 2
+      },
+      "wait_cycles": 35
+    },
+    {
+      "id": "DIV_TP018",
+      "desc": "REM: INT32_MIN % -1 = 0 (overflow case, remainder = 0)",
+      "inputs": {
+        "setOpcodeValidI": true,
+        "setOpcodeOpcodeI": 15379,
+        "setOpcodeRaOperandI": 2147483648,
+        "setOpcodeRbOperandI": 4294967295
+      },
+      "wait_cycles": 1
+    }
+  ]
+}
