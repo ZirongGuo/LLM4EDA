@@ -2,6 +2,9 @@
 Verilog/Json converter
 
 ## Verilog to Json
+| # | Benchmark | 描述 | 数量 | SConscript |
+|---|------|------|---------|------------|
+| 1 | Generated dataset 1 | 基础Verilog语法 | 100 | ✅ |
 The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
 (base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/parse_to_json.py --top riscv_core /home/gzr/test/riscv-master/riscv-master/core/riscv/*.v -o output/design_riscv.json
@@ -10,6 +13,9 @@ The Verilog/Json conversion model is currently undergoing iterative testing.
 ```
 
 ## Json to Verilog
+| # | Benchmark | 描述 | 数量 | SConscript |
+|---|------|------|---------|------------|
+| 1 | Generated dataset 1 | 基础Verilog语法 | 100 | ✅ |
 The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
 (base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/generate_from_json.py output/design_riscv.json -o output/generated/riscv_core_restored.v
