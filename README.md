@@ -31,3 +31,37 @@ Warning: Orthogonal edges do not currently handle edge labels. Try using xlabels
 [OK] 已保存修改后的 JSON: output/design_riscv.json
      应用了 1 项变更
 ```
+
+## Gem5 Simulation
+```shell
+# generate submodules
+python scripts/llm_gen_submodules.py \
+      --design example_design_complete.json \
+      --v-dir rtl/riscv \
+      --top configs/top.py \
+      --simobj-dir gem5/src/custom
+
+# generate top
+python3 scripts/gen_top.py --project $PROJECT
+
+# build
+$ cd /home/gzr/new_test/gem5 && PYTHON_CONFIG=python3.12-config scons \
+  build/X86/custom/riscv/riscv_core.o \
+  build/X86/custom/riscv/riscv_csr.o \
+  build/X86/custom/riscv/riscv_csr_regfile.o \
+  build/X86/custom/riscv/riscv_decode.o \
+  build/X86/custom/riscv/riscv_decoder.o \
+  build/X86/custom/riscv/riscv_defs.o \
+  build/X86/custom/riscv/riscv_divider.o \
+  build/X86/custom/riscv/riscv_exec.o \
+  build/X86/custom/riscv/riscv_fetch.o \
+  build/X86/custom/riscv/riscv_issue.o \
+  build/X86/custom/riscv/riscv_lsu.o \
+  build/X86/custom/riscv/riscv_mmu.o \
+  build/X86/custom/riscv/riscv_multiplier.o \
+  build/X86/custom/riscv/riscv_pipe_ctrl.o \
+  build/X86/custom/riscv/riscv_regfile.o \
+  build/X86/custom/riscv/riscv_trace_sim.o \
+  build/X86/custom/riscv/riscv_xilinx_2r1w.o \
+  -j$(nproc) 2>&1 | grep -E "error:|scons:|Compiling" | tail -30
+```
