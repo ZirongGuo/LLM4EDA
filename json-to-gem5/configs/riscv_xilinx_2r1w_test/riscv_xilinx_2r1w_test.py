@@ -1,0 +1,10 @@
+import m5
+from m5.objects import *
+
+root = Root(full_system=False)
+root.dut = RiscvXilinx2r1w()
+root.tester = RiscvXilinx2R1WTestGenerator(dut=root.dut, clock_period=100)
+
+m5.instantiate()
+exit_event = m5.simulate()
+print(f"Exiting @ tick {m5.curTick()} because {exit_event.getCause()}")
