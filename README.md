@@ -43,35 +43,35 @@ Frontend source for the browser visualizer lives in `scripts/visualizer_frontend
 ```
 
 ## Gem5 Simulation
+
 ```shell
-# generate submodules
-python scripts/llm_gen_submodules.py \
-      --design example_design_complete.json \
-      --v-dir rtl/riscv \
-      --top configs/top.py \
-      --simobj-dir gem5/src/custom
-
-# generate top
-python3 scripts/gen_top.py --project $PROJECT
-
-# build
-$ cd /home/gzr/new_test/gem5 && PYTHON_CONFIG=python3.12-config scons \
-  build/X86/custom/riscv/riscv_core.o \
-  build/X86/custom/riscv/riscv_csr.o \
-  build/X86/custom/riscv/riscv_csr_regfile.o \
-  build/X86/custom/riscv/riscv_decode.o \
-  build/X86/custom/riscv/riscv_decoder.o \
-  build/X86/custom/riscv/riscv_defs.o \
-  build/X86/custom/riscv/riscv_divider.o \
-  build/X86/custom/riscv/riscv_exec.o \
-  build/X86/custom/riscv/riscv_fetch.o \
-  build/X86/custom/riscv/riscv_issue.o \
-  build/X86/custom/riscv/riscv_lsu.o \
-  build/X86/custom/riscv/riscv_mmu.o \
-  build/X86/custom/riscv/riscv_multiplier.o \
-  build/X86/custom/riscv/riscv_pipe_ctrl.o \
-  build/X86/custom/riscv/riscv_regfile.o \
-  build/X86/custom/riscv/riscv_trace_sim.o \
-  build/X86/custom/riscv/riscv_xilinx_2r1w.o \
-  -j$(nproc) 2>&1 | grep -E "error:|scons:|Compiling" | tail -30
+请执行LLM4EDA/json-to-gem5/documents/workflow.md，任务位于LLM4EDA/rtl/riscv。
 ```
+
+This is a pre-established workflow, please send this prompt to Opencode.
+
+Results (PROGRESS.md) ：
+
+| # | 模块 | 类型 | 测试向量 | SConscript |
+|---|------|------|---------|------------|
+| 1 | riscv_alu | combinational | 32 | ✅ |
+| 2 | riscv_csr_regfile | sequential | 25 | ✅ |
+| 3 | riscv_xilinx_2r1w | sequential | 13 | ✅ |
+| 4 | riscv_divider | sequential | 18 | ✅ |
+| 5 | riscv_multiplier | sequential | 15 | ✅ |
+| 6 | riscv_regfile | sequential | 14 | ✅ |
+| 7 | riscv_trace_sim | combinational | 7 | ✅ |
+| 8 | riscv_pipe_ctrl | combinational | 15 | ✅ |
+| 9 | riscv_fetch | sequential | 15 | ✅ |
+| 10 | riscv_issue | sequential | 22 | ✅ |
+| 11 | riscv_exec | sequential | 25 | ✅ |
+| 12 | riscv_lsu | sequential | 20 | ✅ |
+| 13 | riscv_csr | sequential | 18 | ✅ |
+| 14 | riscv_mmu | sequential | 20 | ✅ |
+| 15 | riscv_core（顶层） | sequential | 18 | ✅ |
+
+**总计：277 个测试向量**  
+
+
+
+
