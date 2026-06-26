@@ -2,6 +2,7 @@
 Verilog/Json converter
 
 ## Verilog to Json
+The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
 (base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/parse_to_json.py --top riscv_core /home/gzr/test/riscv-master/riscv-master/core/riscv/*.v -o output/design_riscv.json
 [OK] 已生成规范 JSON: output/design_riscv.json
@@ -9,6 +10,7 @@ Verilog/Json converter
 ```
 
 ## Json to Verilog
+The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
 (base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/generate_from_json.py output/design_riscv.json -o output/generated/riscv_core_restored.v
 [OK] 已生成 Verilog: output/generated/riscv_core_restored.v
@@ -17,8 +19,11 @@ Verilog/Json converter
 
 ## Json Visualization
 Support Json to interactive HTML and Dot/SVG.
+<img width="10520" height="9680" alt="e48c96876af4dbefe423fa17315c9424" src="https://github.com/user-attachments/assets/cde11d50-00ca-4cd5-a6bd-a14194f12c5c" />
+<img width="3840" height="2160" alt="31f9b178c8eb561f5844469852b9584f" src="https://github.com/user-attachments/assets/2ec6b30d-0348-4ac5-99fa-27d15fea3cd2" />
 ```shell
-(base) root@DESKTOP-SRPEBB4:/home/gzr/new_test# python scripts/visualize_block.py output/design_riscv.json --format svg -o output/diagrams/design_riscv.svg
+# Dot/SVG
+python scripts/visualize_block.py output/design_riscv.json --format svg -o output/diagrams/design_riscv.svg
 Warning: Orthogonal edges do not currently handle edge labels. Try using xlabels.
 [OK] 已生成 SVG 文件: output/diagrams/design_riscv.svg
 
