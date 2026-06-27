@@ -212,7 +212,7 @@ class SimpleVerilogParser:
                     )
 
         # Variable part-select with +: or -: (check before binary ops)
-        ps_match = re.match(r'(\w+)\[(\w+(?:\s*[+\-*/]\s*\w+)*)\s*(\+:|-\:)\s*(\w+)\]$', expr_text)
+        ps_match = re.match(r'(\w+)\[(.+?)\s*(\+:|-\:)\s*(.+?)\]$', expr_text)
         if ps_match:
             return build_bit_select(
                 build_ref(ps_match.group(1)),
@@ -296,7 +296,7 @@ class SimpleVerilogParser:
         assigns = []
         clean = re.sub(r'generate.*?endgenerate', '', text, flags=re.DOTALL)
         for m in re.finditer(
-            r'assign\s+(?:#\s*(\d+))?\s*(\w+(?:\[[^\]]*\])?)\s*=\s*([^;]+);',
+            r'assign\s+(?:#\s*(\d+))?\s*(\{[^}]+\}|\w+(?:\[[^\]]*\])?)\s*=\s*([^;]+);',
             clean
         ):
             delay_val = m.group(1)
@@ -450,7 +450,6 @@ class SimpleVerilogParser:
                 # Single statement body: for/if/while/repeat/forever
                 sensitivity = self._parse_sensitivity(sens_text) if sens_text else []
                 sbody = text[after:]
-                # Find body extent by looking for begin...end or semicolon
                 bm_body = re.search(r'\bbegin\b', sbody)
                 body_end_pos = after
                 if bm_body:
@@ -458,18 +457,76 @@ class SimpleVerilogParser:
                     if be > after:
                         body_end_pos = be + 3
                 else:
-                    # Single line statement: find next ;
-                    sm_body = re.search(r'[^;]+;', sbody)
-                    if sm_body:
-                        body_end_pos = after + sm_body.end()
-                    else:
-                        body_end_pos = after + len(sbody)
+                    # Use the full remaining body text for single-statement bodies
+                    # _extract_statements will properly parse the if-else chain etc.
+                    body_end_pos = len(text)
                 body_text = text[after:body_end_pos].strip()
                 stmts = self._extract_statements(body_text)
                 blocks.append(build_always_block(f"proc_{idx}", always_type, sensitivity, stmts))
                 idx += 1
                 pos = body_end_pos
         return blocks
+
+    def _parse_if_chain(self, chunk):
+        """Parse a complete if-else-elseif chain starting at chunk.
+        Returns (if_stmt, remaining_text) or (None, chunk)."""
+        if_match = re.match(r'if\s*\(', chunk)
+        if not if_match:
+            return None, chunk
+        cond_end = self._match_paren(chunk, if_match.end() - 1)
+        if cond_end < 0:
+            return None, chunk
+        cond = self._parse_expression(chunk[if_match.end():cond_end])
+        after = cond_end + 1
+        then_stmts, after_then = self._parse_if_body(chunk[after:])
+        rest = after_then.lstrip()
+        else_stmts = []
+        if rest.startswith("else"):
+            rest2 = rest[4:].lstrip()
+            elif_m = re.match(r'if\s*\(', rest2)
+            if elif_m:
+                elif_stmt, rest3 = self._parse_if_chain(rest2)
+                if elif_stmt:
+                    else_stmts = [elif_stmt]
+                rest = rest3
+            else:
+                else_body, rest = self._parse_if_body(rest2)
+                else_stmts = else_body
+        return build_if(cond, then_stmts, else_stmts), rest
+
+    def _parse_if_body(self, text):
+        """Extract body statements from text (may be begin/end wrapped or single stmt).
+        Returns (stmts, remaining_text)."""
+        bm = re.match(r'\s*\bbegin\b', text)
+        if bm:
+            bs = bm.end()
+            be = _find_block_end(text, bs)
+            if be > bs:
+                stmts = self._extract_statements(text[bs:be])
+                return stmts, text[be + 3:]
+            return [], text
+        # Check for if statement as the single body (no begin/end)
+        st = text.lstrip()
+        lead = len(text) - len(st)
+        if re.match(r'if\s*\(', st):
+            stmt, rest = self._parse_if_chain(st)
+            if stmt:
+                return [stmt], text[:lead] + (rest or "")
+        # Check for case statement as the single body
+        if re.match(r'case[xz]?\s*\(', st):
+            cm = re.match(r'case[xz]?\s*\(', st)
+            cp = self._match_paren(st, cm.end() - 1)
+            if cp > 0:
+                ec = st.find('endcase', cp)
+                if ec > 0:
+                    stmts = self._extract_statements(st[:ec + 7])
+                    return stmts, text[:lead] + st[ec + 7:]
+        # Single assignment statement
+        sm = re.search(r'[^;]+;', st)
+        if sm:
+            stmts = self._extract_flat_assignments(sm.group(0) + ";")
+            return stmts, text[:lead] + st[sm.end():]
+        return [], text
 
     def _extract_statements(self, text):
         """Extract if-else, case, and flat assignment statements from always block body."""
@@ -483,146 +540,14 @@ class SimpleVerilogParser:
 
             if_match = re.match(r'if\s*\(', chunk)
             if if_match:
-                cond_end = self._match_paren(chunk, if_match.end() - 1)
-                if cond_end < 0:
+                if_stmt, rest = self._parse_if_chain(chunk)
+                if if_stmt:
+                    stmts.append(if_stmt)
+                    i = len(text) - len(rest) if rest else len(text)
+                    continue
+                else:
                     i += 1
                     continue
-                cond = self._parse_expression(chunk[if_match.end():cond_end])
-
-                # find then body
-                after = cond_end + 1
-                else_pos = chunk.find('else', after)
-                search_end = else_pos if else_pos > 0 else len(chunk)
-                # Only use 'begin' if it's not preceded by a nested if (which would own it)
-                bm = None
-                if after < search_end:
-                    temp_bm = re.search(r'\bbegin\b', chunk[after:search_end])
-                    if temp_bm:
-                        between_cond = chunk[after:after + temp_bm.start()]
-                        if not re.search(r'\bif\s*\(', between_cond):
-                            bm = temp_bm
-                then_end = len(chunk)
-                then_stmts = []
-                has_begin_end = False
-                if bm:
-                    ts = after + bm.end()
-                    then_end = _find_block_end(chunk, ts)
-                    has_begin_end = True
-                    if then_end > ts:
-                        then_stmts = self._extract_statements(chunk[ts:then_end])
-                else:
-                    # Check for case statement as then body
-                    cm = re.match(r'\s*case[xz]?\s*\(', chunk[after:])
-                    if cm:
-                        case_end = self._match_paren(chunk, after + cm.end() - 1)
-                        if case_end > 0:
-                            ec = chunk.find('endcase', case_end)
-                            if ec > 0:
-                                then_stmts = self._extract_statements(chunk[after:ec + 7])
-                                then_end = ec + 7
-                    else:
-                        sm = re.search(r'[^;]+;', chunk[after:])
-                        if sm:
-                            then_stmts = self._extract_flat_assignments(chunk[after:after + sm.end()])
-                            then_end = after + sm.end()
-
-                # find else body
-                else_stmts = []
-                after_then = (then_end + 3) if (has_begin_end and then_end < len(chunk)) else then_end
-                rest = chunk[after_then:].lstrip()
-                if rest.startswith("else"):
-                    rest = rest[4:].lstrip()
-                    elif_match = re.match(r'if\s*\(', rest)
-                    if elif_match:
-                        elif_end = self._match_paren(rest, elif_match.end() - 1)
-                        if elif_end > 0:
-                            elif_cond = self._parse_expression(rest[elif_match.end():elif_end])
-                            elif_body = rest[elif_end + 1:].lstrip()
-                            bm3 = re.search(r'\bbegin\b', elif_body)
-                            elif_then = []
-                            elif_rest = elif_body
-                            if bm3:
-                                ets = bm3.end()
-                                ete = _find_block_end(elif_body, ets)
-                                if ete > ets:
-                                    elif_then = self._extract_statements(elif_body[ets:ete])
-                                elif_rest = elif_body[ete + 3:].lstrip()
-                            else:
-                                # Check for nested if statement in elif body
-                                elif_if_match = re.match(r'if\s*\(', elif_body)
-                                if elif_if_match:
-                                    elif_then = self._extract_statements(elif_body)
-                                    elif_rest = ""
-                                else:
-                                    cm3 = re.match(r'case[xz]?\s*\(', elif_body)
-                                    if cm3:
-                                        cp3 = self._match_paren(elif_body, cm3.end() - 1)
-                                        if cp3 > 0:
-                                            ec3 = elif_body.find('endcase', cp3)
-                                            if ec3 > 0:
-                                                elif_then = self._extract_statements(elif_body[:ec3 + 7])
-                                                elif_rest = elif_body[ec3 + 7:].lstrip()
-                                    else:
-                                        sm3 = re.search(r'[^;]+;', elif_body)
-                                        if sm3:
-                                            elif_then = self._extract_flat_assignments(sm3.group(0))
-                                            elif_rest = elif_body[sm3.end():].lstrip()
-                            elif_else = []
-                            if elif_rest.startswith("else"):
-                                elif_rest2 = elif_rest[4:].lstrip()
-                                bm4 = re.search(r'\bbegin\b', elif_rest2)
-                                if bm4:
-                                    ees = bm4.end()
-                                    eee = _find_block_end(elif_rest2, ees)
-                                    if eee > ees:
-                                        elif_else = self._extract_statements(elif_rest2[ees:eee])
-                                else:
-                                    cm4 = re.match(r'case[xz]?\s*\(', elif_rest2)
-                                    if cm4:
-                                        cp4 = self._match_paren(elif_rest2, cm4.end() - 1)
-                                        if cp4 > 0:
-                                            ec4 = elif_rest2.find('endcase', cp4)
-                                            if ec4 > 0:
-                                                elif_else = self._extract_statements(elif_rest2[:ec4 + 7])
-                                    else:
-                                        sm4 = re.search(r'[^;]+;', elif_rest2)
-                                        if sm4:
-                                            elif_else = self._extract_flat_assignments(sm4.group(0))
-                            else_stmts = [build_if(elif_cond, elif_then, elif_else)]
-                            i = len(chunk)
-                    else:
-                        bm2 = re.search(r'\bbegin\b', rest)
-                        if bm2:
-                            es = bm2.end()
-                            ee = _find_block_end(rest, es)
-                            if ee > es:
-                                else_stmts = self._extract_statements(rest[es:ee])
-                            i += len(chunk) - len(rest[(ee + 3):]) if ee < len(rest) else len(chunk)
-                        else:
-                            # Check for if statement in else body (no begin/end)
-                            if re.match(r'if\s*\(', rest):
-                                else_stmts = self._extract_statements(rest)
-                                i = len(chunk)
-                            elif re.match(r'case[xz]?\s*\(', rest):
-                                cp2 = self._match_paren(rest, re.match(r'case[xz]?\s*\(', rest).end() - 1)
-                                if cp2 > 0:
-                                    ec2 = rest.find('endcase', cp2)
-                                    if ec2 > 0:
-                                        else_stmts = self._extract_statements(rest[:ec2 + 7])
-                                        i += len(chunk) - len(rest[ec2 + 7:])
-                            else:
-                                sm = re.search(r'[^;]+;', rest)
-                                if sm:
-                                    else_stmts = self._extract_flat_assignments(sm.group(0))
-                                    i += len(chunk) - len(rest[sm.end():])
-                                else:
-                                    i += len(chunk) - len(rest)
-                else:
-                    i += len(chunk) - len(rest)
-
-                stmts.append(build_if(cond, then_stmts, else_stmts))
-                continue
-
             case_match = re.match(r'(casex|casez|case)\s*\(', chunk)
             if case_match:
                 case_kw = case_match.group(1)
@@ -762,7 +687,8 @@ class SimpleVerilogParser:
                         step_text = f"{var} = {step_rhs}"
                     step = self._extract_flat_assignments(step_text + ";")
                     after_for = for_paren_end + 1
-                    bm = re.search(r'\bbegin\b', chunk[after_for:])
+                    for_rest = chunk[after_for:]
+                    bm = re.match(r'\s*\bbegin\b', for_rest)
                     for_body = []
                     if bm:
                         fb_start = after_for + bm.end()
@@ -771,10 +697,10 @@ class SimpleVerilogParser:
                             for_body = self._extract_statements(chunk[fb_start:fb_end])
                         i += len(chunk) - len(chunk[fb_end + 3:]) if fb_end < len(chunk) else len(chunk)
                     else:
-                        sm = re.search(r'[^;]+;', chunk[after_for:])
+                        sm = re.search(r'[^;]+;', for_rest)
                         if sm:
-                            for_body = self._extract_flat_assignments(chunk[after_for:after_for + sm.end()])
-                            i += len(chunk) - len(chunk[after_for + sm.end():])
+                            for_body = self._extract_flat_assignments(for_rest[:sm.end()])
+                            i += len(chunk) - len(for_rest[sm.end():])
                         else:
                             i += len(chunk)
                     init_stmt = init[0] if init else None
@@ -887,7 +813,7 @@ class SimpleVerilogParser:
                     continue
 
             assign_match = re.match(
-                r'(\w+(?:\[[^\]]*\])?)\s*(<=|=)\s*([^;]+);',
+                r'(\{[^}]+\}|\w+(?:\[[^\]]*\])?)\s*(<=|(?<!=)=(?!=))\s*([^;]+);',
                 chunk
             )
             if assign_match:
@@ -899,17 +825,6 @@ class SimpleVerilogParser:
                 i += assign_match.end()
                 continue
 
-            # Concatenation LHS: {a, b, c} = expr;
-            alt_assign = re.match(r'(\{[^}]+\})\s*(<=|=)\s*([^;]+);', chunk)
-            if alt_assign:
-                stmts.append(build_assignment(
-                    self._parse_expression(alt_assign.group(1)),
-                    self._parse_expression(alt_assign.group(3).strip()),
-                    blocking=(alt_assign.group(2) == "="),
-                ))
-                i += alt_assign.end()
-                continue
-
             i += 1
 
         return stmts
@@ -917,7 +832,7 @@ class SimpleVerilogParser:
     def _extract_flat_assignments(self, text):
         stmts = []
         for m in re.finditer(
-            r'(\w+(?:\[[^\]]*\])?)\s*(<=|=)\s*([^;]+);',
+            r'(\{[^}]+\}|\w+(?:\[[^\]]*\])?)\s*(<=|(?<!=)=(?!=))\s*([^;]+);',
             text
         ):
             lhs_t = m.group(1)
@@ -928,17 +843,6 @@ class SimpleVerilogParser:
                 self._parse_expression(rhs_t),
                 blocking=(op == "="),
             ))
-        # Also handle concatenation LHS
-        for m in re.finditer(
-            r'(\{[^}]+\})\s*(<=|=)\s*([^;]+);',
-            text
-        ):
-            if not any(s['lhs'] == self._parse_expression(m.group(1)) for s in stmts):
-                stmts.append(build_assignment(
-                    self._parse_expression(m.group(1)),
-                    self._parse_expression(m.group(3).strip()),
-                    blocking=(m.group(2) == "="),
-                ))
         return stmts
 
     def _extract_instances(self, body):
