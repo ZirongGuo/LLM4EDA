@@ -6,6 +6,10 @@ Verilog/Json converter
 |---|------|------|---------|------------|
 | 1 | Generated dataset 1 | 基础Verilog语法 | 100 | ✅ |  
 | 2 | Verilog Eval 2 | 更抽象地指定模块接口 | 156 | ✅ |  
+| 3 | ChipBench_self_contain | 无子模块编写 | 30 | ✅ |  
+| 4 | ChipBench_not_self_contain | 含有子模块的顶层模块编写 | 3 | ✅ |  
+| 5 | ChipBench_cpu_ip | CPU IP核 | 5 | ✅ |  
+| 6 | ChipBench | 综合能力 | 156 | ✅ |  
   
 The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
@@ -19,6 +23,10 @@ The Verilog/Json conversion model is currently undergoing iterative testing.
 |---|------|------|---------|------------|
 | 1 | Generated dataset 1 | 基础Verilog语法 | 100 | ✅ |
 | 2 | Verilog Eval 2 | 更抽象地指定模块接口 | 156 | ✅ | 
+| 3 | ChipBench_self_contain | 无子模块编写 | 30 | ✅ |  
+| 4 | ChipBench_not_self_contain | 含有子模块的顶层模块编写 | 3 | ✅ |  
+| 5 | ChipBench_cpu_ip | CPU IP核 | 5 | ✅ |  
+| 6 | ChipBench | 综合能力 | 156 | ✅ |  
   
 The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
