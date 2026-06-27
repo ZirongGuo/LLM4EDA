@@ -9,7 +9,7 @@ Verilog/Json converter
 | 3 | ChipBench_self_contain | 无子模块编写 | 30 | ✅ |  
 | 4 | ChipBench_not_self_contain | 含有子模块的顶层模块编写 | 3 | ✅ |  
 | 5 | ChipBench_cpu_ip | CPU IP核 | 5 | ✅ |  
-| 6 | ChipBench | 综合能力 | 156 | ✅ |  
+| 6 | ChipBench | 综合能力 | 38 | ✅ |  
   
 The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
@@ -26,7 +26,7 @@ The Verilog/Json conversion model is currently undergoing iterative testing.
 | 3 | ChipBench_self_contain | 无子模块编写 | 30 | ✅ |  
 | 4 | ChipBench_not_self_contain | 含有子模块的顶层模块编写 | 3 | ✅ |  
 | 5 | ChipBench_cpu_ip | CPU IP核 | 5 | ✅ |  
-| 6 | ChipBench | 综合能力 | 156 | ✅ |  
+| 6 | ChipBench | 综合能力 | 38 | ✅ |  
   
 The Verilog/Json conversion model is currently undergoing iterative testing.
 ```shell
