@@ -1,0 +1,720 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob003_non-overlapping_sequence_detect_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:00.701007Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "data",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "match",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "not_match",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "pstate",
+          "type": "reg",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "nstate",
+          "type": "reg",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "idle",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd0"
+        },
+        {
+          "name": "s1",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd1"
+        },
+        {
+          "name": "s2",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd2"
+        },
+        {
+          "name": "s3",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd3"
+        },
+        {
+          "name": "s4",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd4"
+        },
+        {
+          "name": "s5",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd5"
+        },
+        {
+          "name": "s6",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd6"
+        },
+        {
+          "name": "sf1",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd7"
+        },
+        {
+          "name": "sf2",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd8"
+        },
+        {
+          "name": "sf3",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd9"
+        },
+        {
+          "name": "sf4",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd10"
+        },
+        {
+          "name": "sf5",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd11"
+        },
+        {
+          "name": "sf6",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "4'd12"
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "pstate"
+                  },
+                  "rhs": {
+                    "ref": "idle"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "pstate"
+                  },
+                  "rhs": {
+                    "ref": "nstate"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "level",
+              "signal": "pstate"
+            },
+            {
+              "type": "level",
+              "signal": "data"
+            }
+          ],
+          "body": [
+            {
+              "type": "case",
+              "expression": {
+                "ref": "pstate"
+              },
+              "items": [
+                {
+                  "value": {
+                    "ref": "idle"
+                  },
+                  "body": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "data"
+                        },
+                        "right": {
+                          "literal": "0"
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "nstate"
+                          },
+                          "rhs": {
+                            "ref": "s1"
+                          },
+                          "blocking": true
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "nstate"
+                          },
+                          "rhs": {
+                            "ref": "sf1"
+                          },
+                          "blocking": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "s1"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "s2"
+                        },
+                        "false_expr": {
+                          "ref": "sf2"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "s2"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "s3"
+                        },
+                        "false_expr": {
+                          "ref": "sf3"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "s3"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "s4"
+                        },
+                        "false_expr": {
+                          "ref": "sf4"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "s4"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "sf5"
+                        },
+                        "false_expr": {
+                          "ref": "s5"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "s5"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "sf6"
+                        },
+                        "false_expr": {
+                          "ref": "s6"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "s6"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "sf1"
+                        },
+                        "false_expr": {
+                          "ref": "s1"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "sf1"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "ref": "sf2"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "sf2"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "ref": "sf3"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "sf3"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "ref": "sf4"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "sf4"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "ref": "sf5"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "sf5"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "ref": "sf6"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "sf6"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "nstate"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "data"
+                        },
+                        "true_expr": {
+                          "ref": "sf1"
+                        },
+                        "false_expr": {
+                          "ref": "s1"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                }
+              ],
+              "default": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "nstate"
+                  },
+                  "rhs": {
+                    "ref": "idle"
+                  },
+                  "blocking": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "level",
+              "signal": "pstate"
+            },
+            {
+              "type": "level",
+              "signal": "data"
+            },
+            {
+              "type": "level",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "==",
+                "left": {
+                  "op": "!",
+                  "operand": {
+                    "ref": "rst_n"
+                  }
+                },
+                "right": {
+                  "literal": "1"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "match"
+                  },
+                  "rhs": {
+                    "literal": "1'b0"
+                  },
+                  "blocking": true
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "not_match"
+                  },
+                  "rhs": {
+                    "literal": "1'b0"
+                  },
+                  "blocking": true
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "pstate"
+                    },
+                    "right": {
+                      "ref": "s6"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "match"
+                      },
+                      "rhs": {
+                        "literal": "1'b1"
+                      },
+                      "blocking": true
+                    },
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "not_match"
+                      },
+                      "rhs": {
+                        "literal": "1'b0"
+                      },
+                      "blocking": true
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "pstate"
+                        },
+                        "right": {
+                          "ref": "sf6"
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "match"
+                          },
+                          "rhs": {
+                            "literal": "1'b0"
+                          },
+                          "blocking": true
+                        },
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "not_match"
+                          },
+                          "rhs": {
+                            "literal": "1'b1"
+                          },
+                          "blocking": true
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "match"
+                          },
+                          "rhs": {
+                            "literal": "1'b0"
+                          },
+                          "blocking": true
+                        },
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "not_match"
+                          },
+                          "rhs": {
+                            "literal": "1'b0"
+                          },
+                          "blocking": true
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

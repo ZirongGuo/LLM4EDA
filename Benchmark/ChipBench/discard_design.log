@@ -1,0 +1,7 @@
+Prob002_implement_full_subtractor_using_three_to_eight_decoder_ref.sv	iverilog syntax check failed
+Prob005_8_bit_alu_ref.sv	iverilog syntax check failed
+Prob006_PC_REG_ref.sv	iverilog syntax check failed
+Prob006_cpu_top_ref.sv	iverilog syntax check failed
+Prob007_div_ref.sv	iverilog syntax check failed
+Prob008_chapter12_ctrl_ref.sv	iverilog syntax check failed
+Prob009_cp0_reg_ref.sv	iverilog syntax check failed

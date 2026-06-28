@@ -1,0 +1,388 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob032_pipeline_multiplier_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:06.541521Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "size",
+          "type": "parameter",
+          "data_type": "",
+          "value": "4"
+        }
+      ],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "mul_a",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "size-1:0"
+        },
+        {
+          "name": "mul_b",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "size-1:0"
+        },
+        {
+          "name": "mul_out",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "size*2-1:0"
+        }
+      ],
+      "signals": [
+        {
+          "name": "temp",
+          "type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "N - 1 : 0",
+          "unpacked_range": "0 : 3"
+        },
+        {
+          "name": "adder_0",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "N - 1 : 0"
+        },
+        {
+          "name": "adder_1",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "N - 1 : 0"
+        },
+        {
+          "name": "i",
+          "type": "genvar",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "N",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "size * 2"
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "adder_0"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "adder_0"
+                  },
+                  "rhs": {
+                    "op": "+",
+                    "left": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "temp"
+                      },
+                      "index": {
+                        "literal": "0"
+                      }
+                    },
+                    "right": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "temp"
+                      },
+                      "index": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "adder_1"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "adder_1"
+                  },
+                  "rhs": {
+                    "op": "+",
+                    "left": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "temp"
+                      },
+                      "index": {
+                        "literal": "2"
+                      }
+                    },
+                    "right": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "temp"
+                      },
+                      "index": {
+                        "literal": "3"
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "mul_out"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "mul_out"
+                  },
+                  "rhs": {
+                    "op": "+",
+                    "left": {
+                      "ref": "adder_0"
+                    },
+                    "right": {
+                      "ref": "adder_1"
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": [],
+      "generates": [
+        {
+          "type": "gen_for",
+          "init": [
+            {
+              "type": "assignment",
+              "lhs": {
+                "ref": "i"
+              },
+              "rhs": {
+                "literal": "0"
+              },
+              "blocking": true
+            }
+          ],
+          "condition": {
+            "op": "<",
+            "left": {
+              "ref": "i"
+            },
+            "right": {
+              "literal": "4"
+            }
+          },
+          "step": [
+            {
+              "type": "assignment",
+              "lhs": {
+                "ref": "i"
+              },
+              "rhs": {
+                "op": "+",
+                "left": {
+                  "ref": "i"
+                },
+                "right": {
+                  "literal": "1"
+                }
+              },
+              "blocking": true
+            }
+          ],
+          "body": [
+            {
+              "id": "assign_33",
+              "lhs": {
+                "type": "bit_select",
+                "source": {
+                  "ref": "temp"
+                },
+                "index": {
+                  "ref": "i"
+                }
+              },
+              "rhs": {
+                "type": "cond",
+                "condition": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "mul_b"
+                  },
+                  "index": {
+                    "ref": "i"
+                  }
+                },
+                "true_expr": {
+                  "op": "<<",
+                  "left": {
+                    "ref": "mul_a"
+                  },
+                  "right": {
+                    "ref": "i"
+                  }
+                },
+                "false_expr": {
+                  "ref": "'d0"
+                }
+              },
+              "blocking": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

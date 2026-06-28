@@ -1,0 +1,235 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob004_Branch_Unit_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:00.910686Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "PC_W",
+          "type": "parameter",
+          "data_type": "",
+          "value": "9"
+        }
+      ],
+      "ports": [
+        {
+          "name": "Cur_PC",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "PC_W-1:0"
+        },
+        {
+          "name": "Imm",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 32,
+          "signed": false
+        },
+        {
+          "name": "JalrSel",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "Branch",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "AluResult",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 32,
+          "signed": false
+        },
+        {
+          "name": "PC_Imm",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 32,
+          "signed": false
+        },
+        {
+          "name": "PC_Four",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 32,
+          "signed": false
+        },
+        {
+          "name": "BrPC",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 32,
+          "signed": false
+        },
+        {
+          "name": "PcSel",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "Branch_Sel",
+          "type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "PC_Full",
+          "type": "logic",
+          "width": 32,
+          "signed": false
+        }
+      ],
+      "always_blocks": [],
+      "assignments": [
+        {
+          "id": "assign_55",
+          "lhs": {
+            "ref": "PC_Full"
+          },
+          "rhs": {
+            "type": "concat",
+            "parts": [
+              {
+                "literal": "23'b0"
+              },
+              {
+                "ref": "Cur_PC"
+              }
+            ]
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_93",
+          "lhs": {
+            "ref": "PC_Imm"
+          },
+          "rhs": {
+            "op": "+",
+            "left": {
+              "ref": "PC_Full"
+            },
+            "right": {
+              "ref": "Imm"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_128",
+          "lhs": {
+            "ref": "PC_Four"
+          },
+          "rhs": {
+            "op": "+",
+            "left": {
+              "ref": "PC_Full"
+            },
+            "right": {
+              "literal": "32'b100"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_169",
+          "lhs": {
+            "ref": "Branch_Sel"
+          },
+          "rhs": {
+            "op": "&&",
+            "left": {
+              "ref": "Branch"
+            },
+            "right": {
+              "type": "bit_select",
+              "source": {
+                "ref": "AluResult"
+              },
+              "index": {
+                "literal": "0"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_223",
+          "lhs": {
+            "ref": "BrPC"
+          },
+          "rhs": {
+            "type": "cond",
+            "condition": {
+              "ref": "JalrSel"
+            },
+            "true_expr": {
+              "ref": "AluResult"
+            },
+            "false_expr": {
+              "type": "cond",
+              "condition": {
+                "ref": "Branch_Sel"
+              },
+              "true_expr": {
+                "ref": "PC_Imm"
+              },
+              "false_expr": {
+                "literal": "32'b0"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_321",
+          "lhs": {
+            "ref": "PcSel"
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "ref": "JalrSel"
+            },
+            "right": {
+              "ref": "Branch_Sel"
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

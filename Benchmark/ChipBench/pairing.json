@@ -1,0 +1,154 @@
+{
+  "Prob000_Four-to-one_multiplexer": {
+    "src": "src/Prob000_Four-to-one_multiplexer_ref.v",
+    "tb": "tb/Prob000_Four-to-one_multiplexer_test.v"
+  },
+  "Prob001_continuous_input_sequence_detect": {
+    "src": "src/Prob001_continuous_input_sequence_detect_ref.v",
+    "tb": "tb/Prob001_continuous_input_sequence_detect_test.v"
+  },
+  "Prob001_controller": {
+    "src": "src/Prob001_controller_ref.v",
+    "tb": "tb/Prob001_controller_test.v"
+  },
+  "Prob001_submodules_to_implement_comparison_of_three_input_numbers": {
+    "src": "src/Prob001_submodules_to_implement_comparison_of_three_input_numbers_ref.v",
+    "tb": "tb/Prob001_submodules_to_implement_comparison_of_three_input_numbers_test.v"
+  },
+  "Prob002_alu": {
+    "src": "src/Prob002_alu_ref.v",
+    "tb": "tb/Prob002_alu_test.v"
+  },
+  "Prob002_extraneous_items_sequence_detect": {
+    "src": "src/Prob002_extraneous_items_sequence_detect_ref.v",
+    "tb": "tb/Prob002_extraneous_items_sequence_detect_test.v"
+  },
+  "Prob003_RegFile": {
+    "src": "src/Prob003_RegFile_ref.v",
+    "tb": "tb/Prob003_RegFile_test.v"
+  },
+  "Prob003_asynchronous_FIFO": {
+    "src": "src/Prob003_asynchronous_FIFO_ref.v",
+    "tb": "tb/Prob003_asynchronous_FIFO_test.v"
+  },
+  "Prob003_non-overlapping_sequence_detect": {
+    "src": "src/Prob003_non-overlapping_sequence_detect_ref.v",
+    "tb": "tb/Prob003_non-overlapping_sequence_detect_test.v"
+  },
+  "Prob004_Branch_Unit": {
+    "src": "src/Prob004_Branch_Unit_ref.v",
+    "tb": "tb/Prob004_Branch_Unit_test.v"
+  },
+  "Prob004_continuous_input_sequence_detect2": {
+    "src": "src/Prob004_continuous_input_sequence_detect2_ref.v",
+    "tb": "tb/Prob004_continuous_input_sequence_detect2_test.v"
+  },
+  "Prob004_synchronous_FIFO": {
+    "src": "src/Prob004_synchronous_FIFO_ref.v",
+    "tb": "tb/Prob004_synchronous_FIFO_test.v"
+  },
+  "Prob005_ALU_Controller": {
+    "src": "src/Prob005_ALU_Controller_ref.v",
+    "tb": "tb/Prob005_ALU_Controller_test.v"
+  },
+  "Prob005_signal_generator": {
+    "src": "src/Prob005_signal_generator_ref.v",
+    "tb": "tb/Prob005_signal_generator_test.v"
+  },
+  "Prob006_data_serial-to-parallel_circuit": {
+    "src": "src/Prob006_data_serial-to-parallel_circuit_ref.v",
+    "tb": "tb/Prob006_data_serial-to-parallel_circuit_test.v"
+  },
+  "Prob007_data_accumulation_output": {
+    "src": "src/Prob007_data_accumulation_output_ref.v",
+    "tb": "tb/Prob007_data_accumulation_output_test.v"
+  },
+  "Prob008_non-integer_data_width_conversion_24to128": {
+    "src": "src/Prob008_non-integer_data_width_conversion_24to128_ref.v",
+    "tb": "tb/Prob008_non-integer_data_width_conversion_24to128_test.v"
+  },
+  "Prob009_non-integer_data_width_conversion_8to12": {
+    "src": "src/Prob009_non-integer_data_width_conversion_8to12_ref.v",
+    "tb": "tb/Prob009_non-integer_data_width_conversion_8to12_test.v"
+  },
+  "Prob010_integer_multiple_data_bit_width_conversion_8to16": {
+    "src": "src/Prob010_integer_multiple_data_bit_width_conversion_8to16_ref.v",
+    "tb": "tb/Prob010_integer_multiple_data_bit_width_conversion_8to16_test.v"
+  },
+  "Prob011_4-bit_carry_look-ahead_adder_circuit": {
+    "src": "src/Prob011_4-bit_carry_look-ahead_adder_circuit_ref.v",
+    "tb": "tb/Prob011_4-bit_carry_look-ahead_adder_circuit_test.v"
+  },
+  "Prob012_state_machine_overlapping_sequence_detection": {
+    "src": "src/Prob012_state_machine_overlapping_sequence_detection_ref.v",
+    "tb": "tb/Prob012_state_machine_overlapping_sequence_detection_test.v"
+  },
+  "Prob013_least_common_multiple": {
+    "src": "src/Prob013_least_common_multiple_ref.v",
+    "tb": "tb/Prob013_least_common_multiple_test.v"
+  },
+  "Prob014_sequence_generator": {
+    "src": "src/Prob014_sequence_generator_ref.v",
+    "tb": "tb/Prob014_sequence_generator_test.v"
+  },
+  "Prob015_vending_machine2": {
+    "src": "src/Prob015_vending_machine2_ref.v",
+    "tb": "tb/Prob015_vending_machine2_test.v"
+  },
+  "Prob016_odd-number_division_with_a_duty_cycle_of_half": {
+    "src": "src/Prob016_odd-number_division_with_a_duty_cycle_of_half_ref.v",
+    "tb": "tb/Prob016_odd-number_division_with_a_duty_cycle_of_half_test.v"
+  },
+  "Prob017_arbitrary_fractional_frequency_division": {
+    "src": "src/Prob017_arbitrary_fractional_frequency_division_ref.v",
+    "tb": "tb/Prob017_arbitrary_fractional_frequency_division_test.v"
+  },
+  "Prob020_write_state_machine_two_stage": {
+    "src": "src/Prob020_write_state_machine_two_stage_ref.v",
+    "tb": "tb/Prob020_write_state_machine_two_stage_test.v"
+  },
+  "Prob023_gray_code_counter": {
+    "src": "src/Prob023_gray_code_counter_ref.v",
+    "tb": "tb/Prob023_gray_code_counter_test.v"
+  },
+  "Prob024_multiplication_and_bitwise_operations": {
+    "src": "src/Prob024_multiplication_and_bitwise_operations_ref.v",
+    "tb": "tb/Prob024_multiplication_and_bitwise_operations_test.v"
+  },
+  "Prob025_pulse_synchronization_circuit": {
+    "src": "src/Prob025_pulse_synchronization_circuit_ref.v",
+    "tb": "tb/Prob025_pulse_synchronization_circuit_test.v"
+  },
+  "Prob026_simple_stopwatch": {
+    "src": "src/Prob026_simple_stopwatch_ref.v",
+    "tb": "tb/Prob026_simple_stopwatch_test.v"
+  },
+  "Prob027_settable_counter": {
+    "src": "src/Prob027_settable_counter_ref.v",
+    "tb": "tb/Prob027_settable_counter_test.v"
+  },
+  "Prob028_up_and_down_counter": {
+    "src": "src/Prob028_up_and_down_counter_ref.v",
+    "tb": "tb/Prob028_up_and_down_counter_test.v"
+  },
+  "Prob030_simple_implementation_RAM": {
+    "src": "src/Prob030_simple_implementation_RAM_ref.v",
+    "tb": "tb/Prob030_simple_implementation_RAM_test.v"
+  },
+  "Prob031_johnson_counter": {
+    "src": "src/Prob031_johnson_counter_ref.v",
+    "tb": "tb/Prob031_johnson_counter_test.v"
+  },
+  "Prob032_pipeline_multiplier": {
+    "src": "src/Prob032_pipeline_multiplier_ref.v",
+    "tb": "tb/Prob032_pipeline_multiplier_test.v"
+  },
+  "Prob033_traffic_lights": {
+    "src": "src/Prob033_traffic_lights_ref.v",
+    "tb": "tb/Prob033_traffic_lights_test.v"
+  },
+  "Prob034_gaming_machine_billing_program": {
+    "src": "src/Prob034_gaming_machine_billing_program_ref.v",
+    "tb": "tb/Prob034_gaming_machine_billing_program_test.v"
+  }
+}

@@ -1,0 +1,334 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob034_gaming_machine_billing_program_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:06.965405Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "money",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 10,
+          "signed": false
+        },
+        {
+          "name": "set",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "boost",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "remain",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 10,
+          "signed": false
+        },
+        {
+          "name": "yellow",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "red",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "signals": [],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "yellow"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "red"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "yellow"
+                  },
+                  "rhs": {
+                    "op": "&&",
+                    "left": {
+                      "op": "<",
+                      "left": {
+                        "ref": "remain"
+                      },
+                      "right": {
+                        "literal": "10"
+                      }
+                    },
+                    "right": {
+                      "ref": "remain"
+                    }
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "red"
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "ref": "boost"
+                    },
+                    "true_expr": {
+                      "op": "<",
+                      "left": {
+                        "ref": "remain"
+                      },
+                      "right": {
+                        "literal": "2"
+                      }
+                    },
+                    "false_expr": {
+                      "op": "<",
+                      "left": {
+                        "ref": "remain"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "remain"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "ref": "boost"
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "remain"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "set"
+                        },
+                        "true_expr": {
+                          "op": "+",
+                          "left": {
+                            "ref": "remain"
+                          },
+                          "right": {
+                            "ref": "money"
+                          }
+                        },
+                        "false_expr": {
+                          "type": "cond",
+                          "condition": {
+                            "op": "<",
+                            "left": {
+                              "ref": "remain"
+                            },
+                            "right": {
+                              "literal": "2"
+                            }
+                          },
+                          "true_expr": {
+                            "ref": "remain"
+                          },
+                          "false_expr": {
+                            "op": "-",
+                            "left": {
+                              "ref": "remain"
+                            },
+                            "right": {
+                              "literal": "2"
+                            }
+                          }
+                        }
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "remain"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "set"
+                        },
+                        "true_expr": {
+                          "op": "+",
+                          "left": {
+                            "ref": "remain"
+                          },
+                          "right": {
+                            "ref": "money"
+                          }
+                        },
+                        "false_expr": {
+                          "type": "cond",
+                          "condition": {
+                            "op": "<",
+                            "left": {
+                              "ref": "remain"
+                            },
+                            "right": {
+                              "literal": "1"
+                            }
+                          },
+                          "true_expr": {
+                            "ref": "remain"
+                          },
+                          "false_expr": {
+                            "op": "-",
+                            "left": {
+                              "ref": "remain"
+                            },
+                            "right": {
+                              "literal": "1"
+                            }
+                          }
+                        }
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

@@ -1,0 +1,340 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob001_submodules_to_implement_comparison_of_three_input_numbers_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:29:56.688178Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "a",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "b",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "c",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "d",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "c_out1",
+          "type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "c1",
+          "type": "reg",
+          "width": 8,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "c1"
+                  },
+                  "rhs": {
+                    "literal": "8'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "c1"
+                  },
+                  "rhs": {
+                    "ref": "c"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": [
+        {
+          "name": "s1",
+          "module": "slave_mod",
+          "parameter_mapping": {},
+          "port_connections": [
+            {
+              "port": "clk",
+              "connection": {
+                "ref": "clk"
+              }
+            },
+            {
+              "port": "rst_n",
+              "connection": {
+                "ref": "rst_n"
+              }
+            },
+            {
+              "port": "a",
+              "connection": {
+                "ref": "a"
+              }
+            },
+            {
+              "port": "b",
+              "connection": {
+                "ref": "b"
+              }
+            },
+            {
+              "port": "c_out",
+              "connection": {
+                "ref": "c_out1"
+              }
+            }
+          ]
+        },
+        {
+          "name": "s2",
+          "module": "slave_mod",
+          "parameter_mapping": {},
+          "port_connections": [
+            {
+              "port": "clk",
+              "connection": {
+                "ref": "clk"
+              }
+            },
+            {
+              "port": "rst_n",
+              "connection": {
+                "ref": "rst_n"
+              }
+            },
+            {
+              "port": "a",
+              "connection": {
+                "ref": "c_out1"
+              }
+            },
+            {
+              "port": "b",
+              "connection": {
+                "ref": "c1"
+              }
+            },
+            {
+              "port": "c_out",
+              "connection": {
+                "ref": "d"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "slave_mod",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "a",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "b",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "c_out",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 8,
+          "signed": false
+        }
+      ],
+      "signals": [],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "c_out"
+                  },
+                  "rhs": {
+                    "literal": "8'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": ">",
+                    "left": {
+                      "ref": "a"
+                    },
+                    "right": {
+                      "ref": "b"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "c_out"
+                      },
+                      "rhs": {
+                        "ref": "b"
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "c_out"
+                      },
+                      "rhs": {
+                        "ref": "a"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": [
+        "s1",
+        "s2"
+      ],
+      "slave_mod": []
+    }
+  }
+}

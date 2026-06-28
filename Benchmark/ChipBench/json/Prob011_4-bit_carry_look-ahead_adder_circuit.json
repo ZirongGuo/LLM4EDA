@@ -1,0 +1,365 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob011_4-bit_carry_look-ahead_adder_circuit_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:03.116218Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "A_in",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "B_in",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "C_1",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "CO",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "S",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 4,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "G",
+          "type": "wire",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "P",
+          "type": "wire",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "C",
+          "type": "wire",
+          "width": 4,
+          "signed": false
+        }
+      ],
+      "always_blocks": [],
+      "assignments": [
+        {
+          "id": "assign_27",
+          "lhs": {
+            "ref": "P"
+          },
+          "rhs": {
+            "op": "^",
+            "left": {
+              "ref": "A_in"
+            },
+            "right": {
+              "ref": "B_in"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_51",
+          "lhs": {
+            "ref": "G"
+          },
+          "rhs": {
+            "op": "&",
+            "left": {
+              "ref": "A_in"
+            },
+            "right": {
+              "ref": "B_in"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_81",
+          "lhs": {
+            "ref": "C"
+          },
+          "rhs": {
+            "type": "concat",
+            "parts": [
+              {
+                "op": "|",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "G"
+                  },
+                  "index": {
+                    "literal": "3"
+                  }
+                },
+                "right": {
+                  "op": "&",
+                  "left": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "P"
+                    },
+                    "index": {
+                      "literal": "3"
+                    }
+                  },
+                  "right": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "C"
+                    },
+                    "index": {
+                      "literal": "2"
+                    }
+                  }
+                }
+              },
+              {
+                "op": "|",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "G"
+                  },
+                  "index": {
+                    "literal": "2"
+                  }
+                },
+                "right": {
+                  "op": "&",
+                  "left": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "P"
+                    },
+                    "index": {
+                      "literal": "2"
+                    }
+                  },
+                  "right": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "C"
+                    },
+                    "index": {
+                      "literal": "1"
+                    }
+                  }
+                }
+              },
+              {
+                "op": "|",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "G"
+                  },
+                  "index": {
+                    "literal": "1"
+                  }
+                },
+                "right": {
+                  "op": "&",
+                  "left": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "P"
+                    },
+                    "index": {
+                      "literal": "1"
+                    }
+                  },
+                  "right": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "C"
+                    },
+                    "index": {
+                      "literal": "0"
+                    }
+                  }
+                }
+              },
+              {
+                "op": "|",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "G"
+                  },
+                  "index": {
+                    "literal": "0"
+                  }
+                },
+                "right": {
+                  "op": "&",
+                  "left": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "P"
+                    },
+                    "index": {
+                      "literal": "0"
+                    }
+                  },
+                  "right": {
+                    "ref": "C_1"
+                  }
+                }
+              }
+            ]
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_167",
+          "lhs": {
+            "ref": "S"
+          },
+          "rhs": {
+            "type": "concat",
+            "parts": [
+              {
+                "op": "^",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "P"
+                  },
+                  "index": {
+                    "literal": "3"
+                  }
+                },
+                "right": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "C"
+                  },
+                  "index": {
+                    "literal": "2"
+                  }
+                }
+              },
+              {
+                "op": "^",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "P"
+                  },
+                  "index": {
+                    "literal": "2"
+                  }
+                },
+                "right": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "C"
+                  },
+                  "index": {
+                    "literal": "1"
+                  }
+                }
+              },
+              {
+                "op": "^",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "P"
+                  },
+                  "index": {
+                    "literal": "1"
+                  }
+                },
+                "right": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "C"
+                  },
+                  "index": {
+                    "literal": "0"
+                  }
+                }
+              },
+              {
+                "op": "^",
+                "left": {
+                  "type": "bit_select",
+                  "source": {
+                    "ref": "P"
+                  },
+                  "index": {
+                    "literal": "0"
+                  }
+                },
+                "right": {
+                  "ref": "C_1"
+                }
+              }
+            ]
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_225",
+          "lhs": {
+            "ref": "CO"
+          },
+          "rhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "C"
+            },
+            "index": {
+              "literal": "3"
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

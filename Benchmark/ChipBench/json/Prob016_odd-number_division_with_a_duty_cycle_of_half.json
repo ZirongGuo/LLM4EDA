@@ -1,0 +1,388 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob016_odd-number_division_with_a_duty_cycle_of_half_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:04.186349Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "N",
+          "type": "parameter",
+          "data_type": "",
+          "value": "7"
+        }
+      ],
+      "ports": [
+        {
+          "name": "rst",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "clk_in",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "clk_out7",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "cnt",
+          "type": "reg",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "clkp",
+          "type": "reg",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "clkn",
+          "type": "reg",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk_in"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "cnt"
+                  },
+                  "rhs": {
+                    "literal": "'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "cnt"
+                    },
+                    "right": {
+                      "op": "-",
+                      "left": {
+                        "ref": "N"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "cnt"
+                      },
+                      "rhs": {
+                        "literal": "'b0"
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "cnt"
+                      },
+                      "rhs": {
+                        "op": "+",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "literal": "1'b1"
+                        }
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk_in"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "clkp"
+                  },
+                  "rhs": {
+                    "literal": "1'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "cnt"
+                    },
+                    "right": {
+                      "op": ">>",
+                      "left": {
+                        "ref": "N"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "clkp"
+                      },
+                      "rhs": {
+                        "literal": "1"
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "op": "-",
+                          "left": {
+                            "ref": "N"
+                          },
+                          "right": {
+                            "literal": "1"
+                          }
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "clkp"
+                          },
+                          "rhs": {
+                            "literal": "0"
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "negedge",
+              "signal": "clk_in"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "clkn"
+                  },
+                  "rhs": {
+                    "literal": "1'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "cnt"
+                    },
+                    "right": {
+                      "op": ">>",
+                      "left": {
+                        "ref": "N"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "clkn"
+                      },
+                      "rhs": {
+                        "literal": "1"
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "op": "-",
+                          "left": {
+                            "ref": "N"
+                          },
+                          "right": {
+                            "literal": "1"
+                          }
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "clkn"
+                          },
+                          "rhs": {
+                            "literal": "0"
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "assign_833",
+          "lhs": {
+            "ref": "clk_out7"
+          },
+          "rhs": {
+            "op": "|",
+            "left": {
+              "ref": "clkp"
+            },
+            "right": {
+              "ref": "clkn"
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

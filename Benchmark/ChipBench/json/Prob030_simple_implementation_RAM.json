@@ -1,0 +1,285 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob030_simple_implementation_RAM_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:06.124591Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "write_en",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "write_addr",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "write_data",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "read_en",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "read_addr",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "read_data",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 4,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "myRAM",
+          "type": "reg",
+          "width": 4,
+          "signed": false,
+          "unpacked_range": "7:0"
+        },
+        {
+          "name": "i",
+          "type": "reg",
+          "width": 9,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "for",
+                  "init": {
+                    "type": "assignment",
+                    "lhs": {
+                      "ref": "i"
+                    },
+                    "rhs": {
+                      "literal": "0"
+                    },
+                    "blocking": true
+                  },
+                  "condition": {
+                    "op": "<",
+                    "left": {
+                      "ref": "i"
+                    },
+                    "right": {
+                      "literal": "256"
+                    }
+                  },
+                  "step": {
+                    "type": "assignment",
+                    "lhs": {
+                      "ref": "i"
+                    },
+                    "rhs": {
+                      "op": "+",
+                      "left": {
+                        "ref": "i"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    },
+                    "blocking": true
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "type": "bit_select",
+                        "source": {
+                          "ref": "myRAM"
+                        },
+                        "index": {
+                          "ref": "i"
+                        }
+                      },
+                      "rhs": {
+                        "literal": "0"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "myRAM"
+                    },
+                    "index": {
+                      "ref": "write_addr"
+                    }
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "ref": "write_en"
+                    },
+                    "true_expr": {
+                      "ref": "write_data"
+                    },
+                    "false_expr": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "myRAM"
+                      },
+                      "index": {
+                        "ref": "write_addr"
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "read_data"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "read_data"
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "ref": "read_en"
+                    },
+                    "true_expr": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "myRAM"
+                      },
+                      "index": {
+                        "ref": "read_addr"
+                      }
+                    },
+                    "false_expr": {
+                      "ref": "read_data"
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

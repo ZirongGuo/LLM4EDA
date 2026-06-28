@@ -1,0 +1,443 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob005_signal_generator_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:01.871458Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "wave_choice",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "wave",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 5,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "cnt",
+          "type": "reg",
+          "width": 5,
+          "signed": false
+        },
+        {
+          "name": "flag",
+          "type": "reg",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "cnt"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "cnt"
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "op": "!=",
+                      "left": {
+                        "ref": "wave_choice"
+                      },
+                      "right": {
+                        "literal": "0"
+                      }
+                    },
+                    "true_expr": {
+                      "literal": "0"
+                    },
+                    "false_expr": {
+                      "type": "cond",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "literal": "19"
+                        }
+                      },
+                      "true_expr": {
+                        "literal": "0"
+                      },
+                      "false_expr": {
+                        "op": "+",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "literal": "1"
+                        }
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "flag"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "flag"
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "op": "!=",
+                      "left": {
+                        "ref": "wave_choice"
+                      },
+                      "right": {
+                        "literal": "2"
+                      }
+                    },
+                    "true_expr": {
+                      "literal": "0"
+                    },
+                    "false_expr": {
+                      "type": "cond",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "wave"
+                        },
+                        "right": {
+                          "literal": "1"
+                        }
+                      },
+                      "true_expr": {
+                        "literal": "1"
+                      },
+                      "false_expr": {
+                        "type": "cond",
+                        "condition": {
+                          "op": "==",
+                          "left": {
+                            "ref": "wave"
+                          },
+                          "right": {
+                            "literal": "19"
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "0"
+                        },
+                        "false_expr": {
+                          "ref": "flag"
+                        }
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wave"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "case",
+                  "expression": {
+                    "ref": "wave_choice"
+                  },
+                  "items": [
+                    {
+                      "value": {
+                        "literal": "0"
+                      },
+                      "body": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "wave"
+                          },
+                          "rhs": {
+                            "type": "cond",
+                            "condition": {
+                              "op": "==",
+                              "left": {
+                                "ref": "cnt"
+                              },
+                              "right": {
+                                "literal": "9"
+                              }
+                            },
+                            "true_expr": {
+                              "literal": "20"
+                            },
+                            "false_expr": {
+                              "type": "cond",
+                              "condition": {
+                                "op": "==",
+                                "left": {
+                                  "ref": "cnt"
+                                },
+                                "right": {
+                                  "literal": "19"
+                                }
+                              },
+                              "true_expr": {
+                                "literal": "0"
+                              },
+                              "false_expr": {
+                                "ref": "wave"
+                              }
+                            }
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    },
+                    {
+                      "value": {
+                        "literal": "1"
+                      },
+                      "body": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "wave"
+                          },
+                          "rhs": {
+                            "type": "cond",
+                            "condition": {
+                              "op": "==",
+                              "left": {
+                                "ref": "wave"
+                              },
+                              "right": {
+                                "literal": "20"
+                              }
+                            },
+                            "true_expr": {
+                              "literal": "0"
+                            },
+                            "false_expr": {
+                              "op": "+",
+                              "left": {
+                                "ref": "wave"
+                              },
+                              "right": {
+                                "literal": "1"
+                              }
+                            }
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    },
+                    {
+                      "value": {
+                        "literal": "2"
+                      },
+                      "body": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "wave"
+                          },
+                          "rhs": {
+                            "type": "cond",
+                            "condition": {
+                              "op": "==",
+                              "left": {
+                                "ref": "flag"
+                              },
+                              "right": {
+                                "literal": "0"
+                              }
+                            },
+                            "true_expr": {
+                              "op": "-",
+                              "left": {
+                                "ref": "wave"
+                              },
+                              "right": {
+                                "literal": "1"
+                              }
+                            },
+                            "false_expr": {
+                              "op": "+",
+                              "left": {
+                                "ref": "wave"
+                              },
+                              "right": {
+                                "literal": "1"
+                              }
+                            }
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    }
+                  ],
+                  "default": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "wave"
+                      },
+                      "rhs": {
+                        "literal": "0"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

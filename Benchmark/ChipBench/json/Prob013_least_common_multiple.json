@@ -1,0 +1,809 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob013_least_common_multiple_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:03.560109Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "DATA_W",
+          "type": "parameter",
+          "data_type": "",
+          "value": "8"
+        }
+      ],
+      "ports": [
+        {
+          "name": "A",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W-1:0"
+        },
+        {
+          "name": "B",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W-1:0"
+        },
+        {
+          "name": "vld_in",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "lcm_out",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W*2-1:0"
+        },
+        {
+          "name": "mcd_out",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W-1:0"
+        },
+        {
+          "name": "vld_out",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "A_reg",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W*2-1:0"
+        },
+        {
+          "name": "B_reg",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W*2-1:0"
+        },
+        {
+          "name": "mcd_out_r1",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W*2-1:0"
+        },
+        {
+          "name": "mult_reg",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_W*2-1:0"
+        },
+        {
+          "name": "c_state",
+          "type": "reg",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "n_state",
+          "type": "reg",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "IDLE",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "'d0"
+        },
+        {
+          "name": "lcm1",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "'d1"
+        },
+        {
+          "name": "Finish",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "'d2"
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "c_state"
+                  },
+                  "rhs": {
+                    "ref": "IDLE"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "c_state"
+                  },
+                  "rhs": {
+                    "ref": "n_state"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "level",
+              "signal": "*"
+            }
+          ],
+          "body": [
+            {
+              "type": "case",
+              "expression": {
+                "ref": "c_state"
+              },
+              "items": [
+                {
+                  "value": {
+                    "ref": "IDLE"
+                  },
+                  "body": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "ref": "vld_in"
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "n_state"
+                          },
+                          "rhs": {
+                            "ref": "lcm1"
+                          },
+                          "blocking": true
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "n_state"
+                          },
+                          "rhs": {
+                            "ref": "IDLE"
+                          },
+                          "blocking": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "lcm1"
+                  },
+                  "body": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "A_reg"
+                        },
+                        "right": {
+                          "ref": "B_reg"
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "n_state"
+                          },
+                          "rhs": {
+                            "ref": "Finish"
+                          },
+                          "blocking": true
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "n_state"
+                          },
+                          "rhs": {
+                            "ref": "lcm1"
+                          },
+                          "blocking": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "ref": "Finish"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "n_state"
+                      },
+                      "rhs": {
+                        "ref": "IDLE"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                }
+              ],
+              "default": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "n_state"
+                  },
+                  "rhs": {
+                    "ref": "IDLE"
+                  },
+                  "blocking": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "A_reg"
+                  },
+                  "rhs": {
+                    "literal": "'b0"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "B_reg"
+                  },
+                  "rhs": {
+                    "literal": "'b0"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "mcd_out_r1"
+                  },
+                  "rhs": {
+                    "literal": "'b0"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "mult_reg"
+                  },
+                  "rhs": {
+                    "literal": "'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "case",
+                  "expression": {
+                    "ref": "c_state"
+                  },
+                  "items": [
+                    {
+                      "value": {
+                        "ref": "IDLE"
+                      },
+                      "body": [
+                        {
+                          "type": "if",
+                          "condition": {
+                            "ref": "vld_in"
+                          },
+                          "then": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "A_reg"
+                              },
+                              "rhs": {
+                                "ref": "A"
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "B_reg"
+                              },
+                              "rhs": {
+                                "ref": "B"
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "mult_reg"
+                              },
+                              "rhs": {
+                                "op": "*",
+                                "left": {
+                                  "ref": "A"
+                                },
+                                "right": {
+                                  "ref": "B"
+                                }
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "mcd_out_r1"
+                              },
+                              "rhs": {
+                                "literal": "0"
+                              },
+                              "blocking": false
+                            }
+                          ],
+                          "else": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "A_reg"
+                              },
+                              "rhs": {
+                                "ref": "A_reg"
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "B_reg"
+                              },
+                              "rhs": {
+                                "ref": "B_reg"
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "mult_reg"
+                              },
+                              "rhs": {
+                                "ref": "mult_reg"
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "mcd_out_r1"
+                              },
+                              "rhs": {
+                                "literal": "0"
+                              },
+                              "blocking": false
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "value": {
+                        "ref": "lcm1"
+                      },
+                      "body": [
+                        {
+                          "type": "if",
+                          "condition": {
+                            "op": ">",
+                            "left": {
+                              "ref": "A_reg"
+                            },
+                            "right": {
+                              "ref": "B_reg"
+                            }
+                          },
+                          "then": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "A_reg"
+                              },
+                              "rhs": {
+                                "op": "-",
+                                "left": {
+                                  "ref": "A_reg"
+                                },
+                                "right": {
+                                  "ref": "B_reg"
+                                }
+                              },
+                              "blocking": false
+                            },
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "B_reg"
+                              },
+                              "rhs": {
+                                "ref": "B_reg"
+                              },
+                              "blocking": false
+                            }
+                          ],
+                          "else": [
+                            {
+                              "type": "if",
+                              "condition": {
+                                "op": "<",
+                                "left": {
+                                  "ref": "A_reg"
+                                },
+                                "right": {
+                                  "ref": "B_reg"
+                                }
+                              },
+                              "then": [
+                                {
+                                  "type": "assignment",
+                                  "lhs": {
+                                    "ref": "B_reg"
+                                  },
+                                  "rhs": {
+                                    "op": "-",
+                                    "left": {
+                                      "ref": "B_reg"
+                                    },
+                                    "right": {
+                                      "ref": "A_reg"
+                                    }
+                                  },
+                                  "blocking": false
+                                },
+                                {
+                                  "type": "assignment",
+                                  "lhs": {
+                                    "ref": "A_reg"
+                                  },
+                                  "rhs": {
+                                    "ref": "A_reg"
+                                  },
+                                  "blocking": false
+                                }
+                              ],
+                              "else": [
+                                {
+                                  "type": "assignment",
+                                  "lhs": {
+                                    "ref": "A_reg"
+                                  },
+                                  "rhs": {
+                                    "ref": "A_reg"
+                                  },
+                                  "blocking": false
+                                },
+                                {
+                                  "type": "assignment",
+                                  "lhs": {
+                                    "ref": "B_reg"
+                                  },
+                                  "rhs": {
+                                    "ref": "B_reg"
+                                  },
+                                  "blocking": false
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "value": {
+                        "ref": "Finish"
+                      },
+                      "body": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "mcd_out_r1"
+                          },
+                          "rhs": {
+                            "ref": "A_reg"
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    }
+                  ],
+                  "default": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "A_reg"
+                      },
+                      "rhs": {
+                        "literal": "'b0"
+                      },
+                      "blocking": false
+                    },
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "B_reg"
+                      },
+                      "rhs": {
+                        "literal": "'b0"
+                      },
+                      "blocking": false
+                    },
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "mcd_out_r1"
+                      },
+                      "rhs": {
+                        "literal": "'b0"
+                      },
+                      "blocking": false
+                    },
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "mult_reg"
+                      },
+                      "rhs": {
+                        "literal": "'b0"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_3",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "vld_out"
+                  },
+                  "rhs": {
+                    "literal": "1'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "c_state"
+                    },
+                    "right": {
+                      "ref": "Finish"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "vld_out"
+                      },
+                      "rhs": {
+                        "literal": "1'b1"
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "vld_out"
+                      },
+                      "rhs": {
+                        "literal": "1'b0"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "assign_2264",
+          "lhs": {
+            "ref": "mcd_out"
+          },
+          "rhs": {
+            "ref": "mcd_out_r1"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_2297",
+          "lhs": {
+            "ref": "lcm_out"
+          },
+          "rhs": {
+            "type": "cond",
+            "condition": {
+              "op": "==",
+              "left": {
+                "ref": "mcd_out_r1"
+              },
+              "right": {
+                "ref": "'d0"
+              }
+            },
+            "true_expr": {
+              "ref": "'hz"
+            },
+            "false_expr": {
+              "op": "/",
+              "left": {
+                "ref": "mult_reg"
+              },
+              "right": {
+                "ref": "mcd_out_r1"
+              }
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

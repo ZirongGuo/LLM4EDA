@@ -1,0 +1,521 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob008_non-integer_data_width_conversion_24to128_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:02.524985Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "valid_in",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "data_in",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 24,
+          "signed": false
+        },
+        {
+          "name": "valid_out",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "data_out",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 128,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "cnt",
+          "type": "reg",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "data_lock",
+          "type": "reg",
+          "width": 128,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "cnt"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "cnt"
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "op": "~",
+                      "operand": {
+                        "ref": "valid_in"
+                      }
+                    },
+                    "true_expr": {
+                      "ref": "cnt"
+                    },
+                    "false_expr": {
+                      "op": "+",
+                      "left": {
+                        "ref": "cnt"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "valid_out"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "valid_out"
+                  },
+                  "rhs": {
+                    "op": "&&",
+                    "left": {
+                      "op": "||",
+                      "left": {
+                        "op": "||",
+                        "left": {
+                          "op": "==",
+                          "left": {
+                            "ref": "cnt"
+                          },
+                          "right": {
+                            "literal": "5"
+                          }
+                        },
+                        "right": {
+                          "op": "==",
+                          "left": {
+                            "ref": "cnt"
+                          },
+                          "right": {
+                            "literal": "10"
+                          }
+                        }
+                      },
+                      "right": {
+                        "op": "==",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "literal": "15"
+                        }
+                      }
+                    },
+                    "right": {
+                      "ref": "valid_in"
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "data_lock"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "data_lock"
+                  },
+                  "rhs": {
+                    "type": "cond",
+                    "condition": {
+                      "ref": "valid_in"
+                    },
+                    "true_expr": {
+                      "type": "concat",
+                      "parts": [
+                        {
+                          "type": "select",
+                          "source": {
+                            "ref": "data_lock"
+                          },
+                          "range": {
+                            "msb": 103,
+                            "lsb": 0
+                          }
+                        },
+                        {
+                          "ref": "data_in"
+                        }
+                      ]
+                    },
+                    "false_expr": {
+                      "ref": "data_lock"
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_3",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "data_out"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "cnt"
+                    },
+                    "right": {
+                      "literal": "5"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "data_out"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "ref": "valid_in"
+                        },
+                        "true_expr": {
+                          "type": "concat",
+                          "parts": [
+                            {
+                              "type": "select",
+                              "source": {
+                                "ref": "data_lock"
+                              },
+                              "range": {
+                                "msb": 119,
+                                "lsb": 0
+                              }
+                            },
+                            {
+                              "type": "select",
+                              "source": {
+                                "ref": "data_in"
+                              },
+                              "range": {
+                                "msb": 23,
+                                "lsb": 16
+                              }
+                            }
+                          ]
+                        },
+                        "false_expr": {
+                          "ref": "data_out"
+                        }
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "cnt"
+                        },
+                        "right": {
+                          "literal": "10"
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "data_out"
+                          },
+                          "rhs": {
+                            "type": "cond",
+                            "condition": {
+                              "ref": "valid_in"
+                            },
+                            "true_expr": {
+                              "type": "concat",
+                              "parts": [
+                                {
+                                  "type": "select",
+                                  "source": {
+                                    "ref": "data_lock"
+                                  },
+                                  "range": {
+                                    "msb": 111,
+                                    "lsb": 0
+                                  }
+                                },
+                                {
+                                  "ref": "data_in[23: 8]"
+                                }
+                              ]
+                            },
+                            "false_expr": {
+                              "ref": "data_out"
+                            }
+                          },
+                          "blocking": false
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "if",
+                          "condition": {
+                            "op": "==",
+                            "left": {
+                              "ref": "cnt"
+                            },
+                            "right": {
+                              "literal": "15"
+                            }
+                          },
+                          "then": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "data_out"
+                              },
+                              "rhs": {
+                                "type": "cond",
+                                "condition": {
+                                  "ref": "valid_in"
+                                },
+                                "true_expr": {
+                                  "type": "concat",
+                                  "parts": [
+                                    {
+                                      "type": "select",
+                                      "source": {
+                                        "ref": "data_lock"
+                                      },
+                                      "range": {
+                                        "msb": 103,
+                                        "lsb": 0
+                                      }
+                                    },
+                                    {
+                                      "ref": "data_in[23: 0]"
+                                    }
+                                  ]
+                                },
+                                "false_expr": {
+                                  "ref": "data_out"
+                                }
+                              },
+                              "blocking": false
+                            }
+                          ],
+                          "else": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "data_out"
+                              },
+                              "rhs": {
+                                "ref": "data_out"
+                              },
+                              "blocking": false
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

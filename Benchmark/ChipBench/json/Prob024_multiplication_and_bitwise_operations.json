@@ -1,0 +1,83 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob024_multiplication_and_bitwise_operations_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:05.042934Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "A",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 8,
+          "signed": false
+        },
+        {
+          "name": "B",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 16,
+          "signed": false
+        }
+      ],
+      "signals": [],
+      "always_blocks": [],
+      "assignments": [
+        {
+          "id": "assign_8",
+          "lhs": {
+            "ref": "B"
+          },
+          "rhs": {
+            "op": "-",
+            "left": {
+              "op": "-",
+              "left": {
+                "op": "<<",
+                "left": {
+                  "ref": "A"
+                },
+                "right": {
+                  "literal": "8"
+                }
+              },
+              "right": {
+                "op": "<<",
+                "left": {
+                  "ref": "A"
+                },
+                "right": {
+                  "literal": "2"
+                }
+              }
+            },
+            "right": {
+              "ref": "A"
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

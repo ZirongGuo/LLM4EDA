@@ -1,0 +1,285 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob003_RegFile_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:00.254681Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "DATA_WIDTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "32"
+        },
+        {
+          "name": "ADDRESS_WIDTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "5"
+        },
+        {
+          "name": "NUM_REGS",
+          "type": "parameter",
+          "data_type": "",
+          "value": "32"
+        }
+      ],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rg_wrt_en",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rg_wrt_dest",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDRESS_WIDTH-1:0"
+        },
+        {
+          "name": "rg_rd_addr1",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDRESS_WIDTH-1:0"
+        },
+        {
+          "name": "rg_rd_addr2",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDRESS_WIDTH-1:0"
+        },
+        {
+          "name": "rg_wrt_data",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0"
+        },
+        {
+          "name": "rg_rd_data1",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0"
+        },
+        {
+          "name": "rg_rd_data2",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0"
+        }
+      ],
+      "signals": [
+        {
+          "name": "register_file",
+          "type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0",
+          "unpacked_range": "NUM_REGS-1:0"
+        },
+        {
+          "name": "i",
+          "type": "integer",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "==",
+                "left": {
+                  "ref": "rst"
+                },
+                "right": {
+                  "literal": "1'b1"
+                }
+              },
+              "then": [
+                {
+                  "type": "for",
+                  "init": {
+                    "type": "assignment",
+                    "lhs": {
+                      "ref": "i"
+                    },
+                    "rhs": {
+                      "literal": "0"
+                    },
+                    "blocking": true
+                  },
+                  "condition": {
+                    "op": "<",
+                    "left": {
+                      "ref": "i"
+                    },
+                    "right": {
+                      "ref": "NUM_REGS"
+                    }
+                  },
+                  "step": {
+                    "type": "assignment",
+                    "lhs": {
+                      "ref": "i"
+                    },
+                    "rhs": {
+                      "op": "+",
+                      "left": {
+                        "ref": "i"
+                      },
+                      "right": {
+                        "literal": "1"
+                      }
+                    },
+                    "blocking": true
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "register_file [i]"
+                      },
+                      "rhs": {
+                        "literal": "0"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "&&",
+                    "left": {
+                      "op": "==",
+                      "left": {
+                        "ref": "rst"
+                      },
+                      "right": {
+                        "literal": "1'b0"
+                      }
+                    },
+                    "right": {
+                      "op": "==",
+                      "left": {
+                        "ref": "rg_wrt_en"
+                      },
+                      "right": {
+                        "literal": "1'b1"
+                      }
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "register_file [ rg_wrt_dest ]"
+                      },
+                      "rhs": {
+                        "ref": "rg_wrt_data"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "assign_324",
+          "lhs": {
+            "ref": "rg_rd_data1"
+          },
+          "rhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "register_file"
+            },
+            "index": {
+              "ref": "rg_rd_addr1"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_373",
+          "lhs": {
+            "ref": "rg_rd_data2"
+          },
+          "rhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "register_file"
+            },
+            "index": {
+              "ref": "rg_rd_addr2"
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

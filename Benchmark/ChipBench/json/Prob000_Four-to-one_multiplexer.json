@@ -1,0 +1,132 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob000_Four-to-one_multiplexer_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:29:56.056214Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "d0",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "d1",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "d2",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "d3",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "sel",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "mux_out",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 2,
+          "signed": false
+        }
+      ],
+      "signals": [],
+      "always_blocks": [],
+      "assignments": [
+        {
+          "id": "assign_3",
+          "lhs": {
+            "ref": "mux_out"
+          },
+          "rhs": {
+            "type": "cond",
+            "condition": {
+              "type": "bit_select",
+              "source": {
+                "ref": "sel"
+              },
+              "index": {
+                "literal": "1"
+              }
+            },
+            "true_expr": {
+              "type": "cond",
+              "condition": {
+                "type": "bit_select",
+                "source": {
+                  "ref": "sel"
+                },
+                "index": {
+                  "literal": "0"
+                }
+              },
+              "true_expr": {
+                "ref": "d3"
+              },
+              "false_expr": {
+                "ref": "d2"
+              }
+            },
+            "false_expr": {
+              "type": "cond",
+              "condition": {
+                "type": "bit_select",
+                "source": {
+                  "ref": "sel"
+                },
+                "index": {
+                  "literal": "0"
+                }
+              },
+              "true_expr": {
+                "ref": "d1"
+              },
+              "false_expr": {
+                "ref": "d0"
+              }
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

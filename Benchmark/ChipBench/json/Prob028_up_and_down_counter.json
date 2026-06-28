@@ -1,0 +1,301 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob028_up_and_down_counter_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:05.918934Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "mode",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "number",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "zero",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false
+        }
+      ],
+      "signals": [],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "zero"
+                  },
+                  "rhs": {
+                    "literal": "1'd0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "==",
+                    "left": {
+                      "ref": "number"
+                    },
+                    "right": {
+                      "literal": "4'd0"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "zero"
+                      },
+                      "rhs": {
+                        "literal": "1'b1"
+                      },
+                      "blocking": false
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "zero"
+                      },
+                      "rhs": {
+                        "literal": "1'b0"
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "!",
+                "operand": {
+                  "ref": "rst_n"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "number"
+                  },
+                  "rhs": {
+                    "literal": "4'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "ref": "mode"
+                  },
+                  "then": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "==",
+                        "left": {
+                          "ref": "number"
+                        },
+                        "right": {
+                          "literal": "9"
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "number"
+                          },
+                          "rhs": {
+                            "literal": "0"
+                          },
+                          "blocking": false
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "number"
+                          },
+                          "rhs": {
+                            "op": "+",
+                            "left": {
+                              "ref": "number"
+                            },
+                            "right": {
+                              "literal": "1'd1"
+                            }
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    }
+                  ],
+                  "else": [
+                    {
+                      "type": "if",
+                      "condition": {
+                        "op": "!",
+                        "operand": {
+                          "ref": "mode"
+                        }
+                      },
+                      "then": [
+                        {
+                          "type": "if",
+                          "condition": {
+                            "op": "==",
+                            "left": {
+                              "ref": "number"
+                            },
+                            "right": {
+                              "literal": "0"
+                            }
+                          },
+                          "then": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "number"
+                              },
+                              "rhs": {
+                                "literal": "9"
+                              },
+                              "blocking": false
+                            }
+                          ],
+                          "else": [
+                            {
+                              "type": "assignment",
+                              "lhs": {
+                                "ref": "number"
+                              },
+                              "rhs": {
+                                "op": "-",
+                                "left": {
+                                  "ref": "number"
+                                },
+                                "right": {
+                                  "literal": "1'd1"
+                                }
+                              },
+                              "blocking": false
+                            }
+                          ]
+                        }
+                      ],
+                      "else": [
+                        {
+                          "type": "assignment",
+                          "lhs": {
+                            "ref": "number"
+                          },
+                          "rhs": {
+                            "ref": "number"
+                          },
+                          "blocking": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

@@ -1,0 +1,575 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob002_alu_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:29:59.828480Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "DATA_WIDTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "32"
+        },
+        {
+          "name": "OPCODE_LENGTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "4"
+        }
+      ],
+      "ports": [
+        {
+          "name": "SrcA",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0"
+        },
+        {
+          "name": "SrcB",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0"
+        },
+        {
+          "name": "Operation",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "OPCODE_LENGTH-1:0"
+        },
+        {
+          "name": "ALUResult",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false,
+          "width_expr": "DATA_WIDTH-1:0"
+        }
+      ],
+      "signals": [],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always_comb",
+          "sensitivity": [],
+          "body": [
+            {
+              "type": "case",
+              "expression": {
+                "ref": "Operation"
+              },
+              "items": [
+                {
+                  "value": {
+                    "literal": "4'b0000"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": "&",
+                        "left": {
+                          "ref": "SrcA"
+                        },
+                        "right": {
+                          "ref": "SrcB"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0001"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": "|",
+                        "left": {
+                          "ref": "SrcA"
+                        },
+                        "right": {
+                          "ref": "SrcB"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0010"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": "+",
+                        "left": {
+                          "type": "call",
+                          "function": "$signed",
+                          "arguments": [
+                            {
+                              "ref": "SrcA"
+                            }
+                          ]
+                        },
+                        "right": {
+                          "type": "call",
+                          "function": "$signed",
+                          "arguments": [
+                            {
+                              "ref": "SrcB"
+                            }
+                          ]
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0011"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": "^",
+                        "left": {
+                          "ref": "SrcA"
+                        },
+                        "right": {
+                          "ref": "SrcB"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0100"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": "<<",
+                        "left": {
+                          "ref": "SrcA"
+                        },
+                        "right": {
+                          "type": "select",
+                          "source": {
+                            "ref": "SrcB"
+                          },
+                          "range": {
+                            "msb": 4,
+                            "lsb": 0
+                          }
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0101"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": ">>",
+                        "left": {
+                          "ref": "SrcA"
+                        },
+                        "right": {
+                          "type": "select",
+                          "source": {
+                            "ref": "SrcB"
+                          },
+                          "range": {
+                            "msb": 4,
+                            "lsb": 0
+                          }
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0110"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": "-",
+                        "left": {
+                          "type": "call",
+                          "function": "$signed",
+                          "arguments": [
+                            {
+                              "ref": "SrcA"
+                            }
+                          ]
+                        },
+                        "right": {
+                          "type": "call",
+                          "function": "$signed",
+                          "arguments": [
+                            {
+                              "ref": "SrcB"
+                            }
+                          ]
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b0111"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "op": ">>>",
+                        "left": {
+                          "type": "call",
+                          "function": "$signed",
+                          "arguments": [
+                            {
+                              "ref": "SrcA"
+                            }
+                          ]
+                        },
+                        "right": {
+                          "type": "select",
+                          "source": {
+                            "ref": "SrcB"
+                          },
+                          "range": {
+                            "msb": 4,
+                            "lsb": 0
+                          }
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1000"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "op": "==",
+                          "left": {
+                            "ref": "SrcA"
+                          },
+                          "right": {
+                            "ref": "SrcB"
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "1"
+                        },
+                        "false_expr": {
+                          "literal": "0"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1001"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "op": "!=",
+                          "left": {
+                            "ref": "SrcA"
+                          },
+                          "right": {
+                            "ref": "SrcB"
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "1"
+                        },
+                        "false_expr": {
+                          "literal": "0"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1100"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "op": "<",
+                          "left": {
+                            "type": "call",
+                            "function": "$signed",
+                            "arguments": [
+                              {
+                                "ref": "SrcA"
+                              }
+                            ]
+                          },
+                          "right": {
+                            "type": "call",
+                            "function": "$signed",
+                            "arguments": [
+                              {
+                                "ref": "SrcB"
+                              }
+                            ]
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "1"
+                        },
+                        "false_expr": {
+                          "literal": "0"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1101"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "op": ">=",
+                          "left": {
+                            "type": "call",
+                            "function": "$signed",
+                            "arguments": [
+                              {
+                                "ref": "SrcA"
+                              }
+                            ]
+                          },
+                          "right": {
+                            "type": "call",
+                            "function": "$signed",
+                            "arguments": [
+                              {
+                                "ref": "SrcB"
+                              }
+                            ]
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "1"
+                        },
+                        "false_expr": {
+                          "literal": "0"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1110"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "op": "<",
+                          "left": {
+                            "ref": "SrcA"
+                          },
+                          "right": {
+                            "ref": "SrcB"
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "1"
+                        },
+                        "false_expr": {
+                          "literal": "0"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1111"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "type": "cond",
+                        "condition": {
+                          "op": ">=",
+                          "left": {
+                            "ref": "SrcA"
+                          },
+                          "right": {
+                            "ref": "SrcB"
+                          }
+                        },
+                        "true_expr": {
+                          "literal": "1"
+                        },
+                        "false_expr": {
+                          "literal": "0"
+                        }
+                      },
+                      "blocking": true
+                    }
+                  ]
+                },
+                {
+                  "value": {
+                    "literal": "4'b1010"
+                  },
+                  "body": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "ALUResult"
+                      },
+                      "rhs": {
+                        "literal": "1"
+                      },
+                      "blocking": true
+                    }
+                  ]
+                }
+              ],
+              "default": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "ALUResult"
+                  },
+                  "rhs": {
+                    "literal": "0"
+                  },
+                  "blocking": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

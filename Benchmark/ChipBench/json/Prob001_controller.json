@@ -1,0 +1,666 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob001_controller_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:29:56.462083Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "Opcode",
+          "direction": "input",
+          "data_type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "ALUSrc",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "MemtoReg",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "RegWrite",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "MemRead",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "MemWrite",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "ALUOp",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 2,
+          "signed": false
+        },
+        {
+          "name": "Branch",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "JalrSel",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "RWSel",
+          "direction": "output",
+          "data_type": "logic",
+          "width": 2,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "R_TYPE",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "LW",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "SW",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "RTypeI",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "BR",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "JAL",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "JALR",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "LUI",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        },
+        {
+          "name": "AUIPC",
+          "type": "logic",
+          "width": 7,
+          "signed": false
+        }
+      ],
+      "always_blocks": [],
+      "assignments": [
+        {
+          "id": "assign_82",
+          "lhs": {
+            "ref": "R_TYPE"
+          },
+          "rhs": {
+            "literal": "7'b0110011"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_119",
+          "lhs": {
+            "ref": "LW"
+          },
+          "rhs": {
+            "literal": "7'b0000011"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_156",
+          "lhs": {
+            "ref": "SW"
+          },
+          "rhs": {
+            "literal": "7'b0100011"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_193",
+          "lhs": {
+            "ref": "RTypeI"
+          },
+          "rhs": {
+            "literal": "7'b0010011"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_228",
+          "lhs": {
+            "ref": "BR"
+          },
+          "rhs": {
+            "literal": "7'b1100011"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_266",
+          "lhs": {
+            "ref": "JAL"
+          },
+          "rhs": {
+            "literal": "7'b1101111"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_299",
+          "lhs": {
+            "ref": "JALR"
+          },
+          "rhs": {
+            "literal": "7'b1100111"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_333",
+          "lhs": {
+            "ref": "LUI"
+          },
+          "rhs": {
+            "literal": "7'b0110111"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_367",
+          "lhs": {
+            "ref": "AUIPC"
+          },
+          "rhs": {
+            "literal": "7'b0010111"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_402",
+          "lhs": {
+            "ref": "ALUSrc"
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "||",
+              "left": {
+                "op": "||",
+                "left": {
+                  "op": "==",
+                  "left": {
+                    "ref": "Opcode"
+                  },
+                  "right": {
+                    "ref": "LW"
+                  }
+                },
+                "right": {
+                  "op": "==",
+                  "left": {
+                    "ref": "Opcode"
+                  },
+                  "right": {
+                    "ref": "SW"
+                  }
+                }
+              },
+              "right": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "RTypeI"
+                }
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "JALR"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_488",
+          "lhs": {
+            "ref": "MemtoReg"
+          },
+          "rhs": {
+            "op": "==",
+            "left": {
+              "ref": "Opcode"
+            },
+            "right": {
+              "ref": "LW"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_522",
+          "lhs": {
+            "ref": "RegWrite"
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "||",
+              "left": {
+                "op": "||",
+                "left": {
+                  "op": "||",
+                  "left": {
+                    "op": "||",
+                    "left": {
+                      "op": "||",
+                      "left": {
+                        "op": "==",
+                        "left": {
+                          "ref": "Opcode"
+                        },
+                        "right": {
+                          "ref": "R_TYPE"
+                        }
+                      },
+                      "right": {
+                        "op": "==",
+                        "left": {
+                          "ref": "Opcode"
+                        },
+                        "right": {
+                          "ref": "LW"
+                        }
+                      }
+                    },
+                    "right": {
+                      "op": "==",
+                      "left": {
+                        "ref": "Opcode"
+                      },
+                      "right": {
+                        "ref": "RTypeI"
+                      }
+                    }
+                  },
+                  "right": {
+                    "op": "==",
+                    "left": {
+                      "ref": "Opcode"
+                    },
+                    "right": {
+                      "ref": "JAL"
+                    }
+                  }
+                },
+                "right": {
+                  "op": "==",
+                  "left": {
+                    "ref": "Opcode"
+                  },
+                  "right": {
+                    "ref": "JALR"
+                  }
+                }
+              },
+              "right": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "LUI"
+                }
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "AUIPC"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_657",
+          "lhs": {
+            "ref": "MemRead"
+          },
+          "rhs": {
+            "op": "==",
+            "left": {
+              "ref": "Opcode"
+            },
+            "right": {
+              "ref": "LW"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_691",
+          "lhs": {
+            "ref": "MemWrite"
+          },
+          "rhs": {
+            "op": "==",
+            "left": {
+              "ref": "Opcode"
+            },
+            "right": {
+              "ref": "SW"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_725",
+          "lhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "ALUOp"
+            },
+            "index": {
+              "literal": "0"
+            }
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "||",
+              "left": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "BR"
+                }
+              },
+              "right": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "JAL"
+                }
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "LUI"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_789",
+          "lhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "ALUOp"
+            },
+            "index": {
+              "literal": "1"
+            }
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "||",
+              "left": {
+                "op": "||",
+                "left": {
+                  "op": "==",
+                  "left": {
+                    "ref": "Opcode"
+                  },
+                  "right": {
+                    "ref": "R_TYPE"
+                  }
+                },
+                "right": {
+                  "op": "==",
+                  "left": {
+                    "ref": "Opcode"
+                  },
+                  "right": {
+                    "ref": "JAL"
+                  }
+                }
+              },
+              "right": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "LUI"
+                }
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "RTypeI"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_875",
+          "lhs": {
+            "ref": "Branch"
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "BR"
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "JAL"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_924",
+          "lhs": {
+            "ref": "JalrSel"
+          },
+          "rhs": {
+            "op": "==",
+            "left": {
+              "ref": "Opcode"
+            },
+            "right": {
+              "ref": "JALR"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_960",
+          "lhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "RWSel"
+            },
+            "index": {
+              "literal": "0"
+            }
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "||",
+              "left": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "JALR"
+                }
+              },
+              "right": {
+                "op": "==",
+                "left": {
+                  "ref": "Opcode"
+                },
+                "right": {
+                  "ref": "JAL"
+                }
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "AUIPC"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1028",
+          "lhs": {
+            "type": "bit_select",
+            "source": {
+              "ref": "RWSel"
+            },
+            "index": {
+              "literal": "1"
+            }
+          },
+          "rhs": {
+            "op": "||",
+            "left": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "LUI"
+              }
+            },
+            "right": {
+              "op": "==",
+              "left": {
+                "ref": "Opcode"
+              },
+              "right": {
+                "ref": "AUIPC"
+              }
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

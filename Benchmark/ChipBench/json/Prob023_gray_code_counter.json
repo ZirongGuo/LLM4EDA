@@ -1,0 +1,374 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob023_gray_code_counter_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:04.837033Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rst_n",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "gray_out",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 4,
+          "signed": false
+        }
+      ],
+      "signals": [
+        {
+          "name": "bin_out",
+          "type": "reg",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "gray_wire",
+          "type": "wire",
+          "width": 4,
+          "signed": false
+        },
+        {
+          "name": "bin_add_wire",
+          "type": "reg",
+          "width": 4,
+          "signed": false
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "==",
+                "left": {
+                  "ref": "rst_n"
+                },
+                "right": {
+                  "literal": "1'b0"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "bin_out"
+                  },
+                  "rhs": {
+                    "literal": "4'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "bin_out"
+                    },
+                    "index": {
+                      "literal": "3"
+                    }
+                  },
+                  "rhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "gray_wire"
+                    },
+                    "index": {
+                      "literal": "3"
+                    }
+                  },
+                  "blocking": true
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "bin_out"
+                    },
+                    "index": {
+                      "literal": "2"
+                    }
+                  },
+                  "rhs": {
+                    "op": "^",
+                    "left": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "gray_wire"
+                      },
+                      "index": {
+                        "literal": "2"
+                      }
+                    },
+                    "right": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "bin_out"
+                      },
+                      "index": {
+                        "literal": "3"
+                      }
+                    }
+                  },
+                  "blocking": true
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "bin_out"
+                    },
+                    "index": {
+                      "literal": "1"
+                    }
+                  },
+                  "rhs": {
+                    "op": "^",
+                    "left": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "gray_wire"
+                      },
+                      "index": {
+                        "literal": "1"
+                      }
+                    },
+                    "right": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "bin_out"
+                      },
+                      "index": {
+                        "literal": "2"
+                      }
+                    }
+                  },
+                  "blocking": true
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "bin_out"
+                    },
+                    "index": {
+                      "literal": "0"
+                    }
+                  },
+                  "rhs": {
+                    "op": "^",
+                    "left": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "gray_wire"
+                      },
+                      "index": {
+                        "literal": "0"
+                      }
+                    },
+                    "right": {
+                      "type": "bit_select",
+                      "source": {
+                        "ref": "bin_out"
+                      },
+                      "index": {
+                        "literal": "1"
+                      }
+                    }
+                  },
+                  "blocking": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "==",
+                "left": {
+                  "ref": "rst_n"
+                },
+                "right": {
+                  "literal": "1'b0"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "bin_add_wire"
+                  },
+                  "rhs": {
+                    "literal": "4'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "bin_add_wire"
+                  },
+                  "rhs": {
+                    "op": "+",
+                    "left": {
+                      "ref": "bin_out"
+                    },
+                    "right": {
+                      "literal": "1'b1"
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rst_n"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "==",
+                "left": {
+                  "ref": "rst_n"
+                },
+                "right": {
+                  "literal": "1'b0"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "gray_out"
+                  },
+                  "rhs": {
+                    "literal": "4'b0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "gray_out"
+                  },
+                  "rhs": {
+                    "ref": "gray_wire"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "assign_532",
+          "lhs": {
+            "ref": "gray_wire"
+          },
+          "rhs": {
+            "op": "^",
+            "left": {
+              "op": ">>",
+              "left": {
+                "ref": "bin_add_wire"
+              },
+              "right": {
+                "literal": "1"
+              }
+            },
+            "right": {
+              "ref": "bin_add_wire"
+            }
+          },
+          "blocking": false
+        }
+      ],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": []
+    }
+  }
+}

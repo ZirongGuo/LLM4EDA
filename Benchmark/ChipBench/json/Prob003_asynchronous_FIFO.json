@@ -1,0 +1,988 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "unknown",
+    "source_files": [
+      "/home/gzr/LLM4EDA/Benchmark/ChipBench/src/Prob003_asynchronous_FIFO_ref.v"
+    ],
+    "top_module": "",
+    "description": "Parsed from 1 file(s)",
+    "generated_by": "parse_to_json.py v1.0",
+    "generated_at": "2026-06-28T06:30:00.471095Z"
+  },
+  "includes": [],
+  "defines": [],
+  "modules": [
+    {
+      "name": "RefModule",
+      "description": "",
+      "parameters": [
+        {
+          "name": "WIDTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "8"
+        },
+        {
+          "name": "DEPTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "16"
+        }
+      ],
+      "ports": [
+        {
+          "name": "wclk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rclk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "wrstn",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rrstn",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "winc",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rinc",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "wdata",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "WIDTH-1:0"
+        },
+        {
+          "name": "wfull",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rempty",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "rdata",
+          "direction": "output",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "WIDTH-1:0"
+        }
+      ],
+      "signals": [
+        {
+          "name": "waddr_bin",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "raddr_bin",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "waddr_gray",
+          "type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "raddr_gray",
+          "type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "wptr",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "rptr",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "wptr_buff",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "wptr_syn",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "rptr_buff",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "rptr_syn",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH:0"
+        },
+        {
+          "name": "wen",
+          "type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "ren",
+          "type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "wren",
+          "type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "waddr",
+          "type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH-1:0"
+        },
+        {
+          "name": "raddr",
+          "type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "ADDR_WIDTH-1:0"
+        },
+        {
+          "name": "ADDR_WIDTH",
+          "type": "parameter",
+          "width": 1,
+          "signed": false,
+          "initial_value": "$clog2(DEPTH)"
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "wclk"
+            },
+            {
+              "type": "negedge",
+              "signal": "wrstn"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "wrstn"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "waddr_bin"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "&&",
+                    "left": {
+                      "op": "!",
+                      "operand": {
+                        "ref": "wfull"
+                      }
+                    },
+                    "right": {
+                      "ref": "winc"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "waddr_bin"
+                      },
+                      "rhs": {
+                        "op": "+",
+                        "left": {
+                          "ref": "waddr_bin"
+                        },
+                        "right": {
+                          "literal": "1'd1"
+                        }
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "rclk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rrstn"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rrstn"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "raddr_bin"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "if",
+                  "condition": {
+                    "op": "&&",
+                    "left": {
+                      "op": "!",
+                      "operand": {
+                        "ref": "rempty"
+                      }
+                    },
+                    "right": {
+                      "ref": "rinc"
+                    }
+                  },
+                  "then": [
+                    {
+                      "type": "assignment",
+                      "lhs": {
+                        "ref": "raddr_bin"
+                      },
+                      "rhs": {
+                        "op": "+",
+                        "left": {
+                          "ref": "raddr_bin"
+                        },
+                        "right": {
+                          "literal": "1'd1"
+                        }
+                      },
+                      "blocking": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_2",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "wclk"
+            },
+            {
+              "type": "negedge",
+              "signal": "wrstn"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "wrstn"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wptr"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wptr"
+                  },
+                  "rhs": {
+                    "ref": "waddr_gray"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_3",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "rclk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rrstn"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rrstn"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rptr"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rptr"
+                  },
+                  "rhs": {
+                    "ref": "raddr_gray"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_4",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "wclk"
+            },
+            {
+              "type": "negedge",
+              "signal": "wrstn"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "wrstn"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rptr_buff"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rptr_syn"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rptr_buff"
+                  },
+                  "rhs": {
+                    "ref": "rptr"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rptr_syn"
+                  },
+                  "rhs": {
+                    "ref": "rptr_buff"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_5",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "rclk"
+            },
+            {
+              "type": "negedge",
+              "signal": "rrstn"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "op": "~",
+                "operand": {
+                  "ref": "rrstn"
+                }
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wptr_buff"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wptr_syn"
+                  },
+                  "rhs": {
+                    "ref": "'d0"
+                  },
+                  "blocking": false
+                }
+              ],
+              "else": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wptr_buff"
+                  },
+                  "rhs": {
+                    "ref": "wptr"
+                  },
+                  "blocking": false
+                },
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "wptr_syn"
+                  },
+                  "rhs": {
+                    "ref": "wptr_buff"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [
+        {
+          "id": "assign_550",
+          "lhs": {
+            "ref": "waddr_gray"
+          },
+          "rhs": {
+            "op": "^",
+            "left": {
+              "ref": "waddr_bin"
+            },
+            "right": {
+              "op": ">>",
+              "left": {
+                "ref": "waddr_bin"
+              },
+              "right": {
+                "literal": "1"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_598",
+          "lhs": {
+            "ref": "raddr_gray"
+          },
+          "rhs": {
+            "op": "^",
+            "left": {
+              "ref": "raddr_bin"
+            },
+            "right": {
+              "op": ">>",
+              "left": {
+                "ref": "raddr_bin"
+              },
+              "right": {
+                "literal": "1"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1382",
+          "lhs": {
+            "ref": "wfull"
+          },
+          "rhs": {
+            "op": "==",
+            "left": {
+              "ref": "wptr"
+            },
+            "right": {
+              "type": "concat",
+              "parts": [
+                {
+                  "op": "~",
+                  "operand": {
+                    "ref": "rptr_syn[ADDR_WIDTH:ADDR_WIDTH-1]"
+                  }
+                },
+                {
+                  "ref": "rptr_syn[ADDR_WIDTH-2:0]"
+                }
+              ]
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1470",
+          "lhs": {
+            "ref": "rempty"
+          },
+          "rhs": {
+            "op": "==",
+            "left": {
+              "ref": "rptr"
+            },
+            "right": {
+              "ref": "wptr_syn"
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1601",
+          "lhs": {
+            "ref": "wen"
+          },
+          "rhs": {
+            "op": "&",
+            "left": {
+              "ref": "winc"
+            },
+            "right": {
+              "op": "!",
+              "operand": {
+                "ref": "wfull"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1629",
+          "lhs": {
+            "ref": "ren"
+          },
+          "rhs": {
+            "op": "&",
+            "left": {
+              "ref": "rinc"
+            },
+            "right": {
+              "op": "!",
+              "operand": {
+                "ref": "rempty"
+              }
+            }
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1658",
+          "lhs": {
+            "ref": "waddr"
+          },
+          "rhs": {
+            "ref": "waddr_bin[ADDR_WIDTH-1:0]"
+          },
+          "blocking": false
+        },
+        {
+          "id": "assign_1700",
+          "lhs": {
+            "ref": "raddr"
+          },
+          "rhs": {
+            "ref": "raddr_bin[ADDR_WIDTH-1:0]"
+          },
+          "blocking": false
+        }
+      ],
+      "instances": [
+        {
+          "name": "dual_port_RAM",
+          "module": "dual_port_RAM",
+          "parameter_mapping": {
+            "DEPTH": {
+              "ref": "DEPTH"
+            },
+            "WIDTH": {
+              "ref": "WIDTH"
+            }
+          },
+          "port_connections": [
+            {
+              "port": "wclk",
+              "connection": {
+                "ref": "wclk"
+              }
+            },
+            {
+              "port": "wenc",
+              "connection": {
+                "ref": "wen"
+              }
+            },
+            {
+              "port": "waddr",
+              "connection": {
+                "ref": "waddr[ADDR_WIDTH-1:0]"
+              }
+            },
+            {
+              "port": "wdata",
+              "connection": {
+                "ref": "wdata"
+              }
+            },
+            {
+              "port": "rclk",
+              "connection": {
+                "ref": "rclk"
+              }
+            },
+            {
+              "port": "renc",
+              "connection": {
+                "ref": "ren"
+              }
+            },
+            {
+              "port": "raddr",
+              "connection": {
+                "ref": "raddr[ADDR_WIDTH-1:0]"
+              }
+            },
+            {
+              "port": "rdata",
+              "connection": {
+                "ref": "rdata"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "dual_port_RAM",
+      "description": "",
+      "parameters": [
+        {
+          "name": "DEPTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "16"
+        },
+        {
+          "name": "WIDTH",
+          "type": "parameter",
+          "data_type": "",
+          "value": "8"
+        }
+      ],
+      "ports": [
+        {
+          "name": "wclk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "wenc",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "waddr",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "$clog2(DEPTH)-1:0"
+        },
+        {
+          "name": "wdata",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "WIDTH-1:0"
+        },
+        {
+          "name": "rclk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "renc",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false
+        },
+        {
+          "name": "raddr",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1,
+          "signed": false,
+          "width_expr": "$clog2(DEPTH)-1:0"
+        },
+        {
+          "name": "rdata",
+          "direction": "output",
+          "data_type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "WIDTH-1:0"
+        }
+      ],
+      "signals": [
+        {
+          "name": "RAM_MEM",
+          "type": "reg",
+          "width": 1,
+          "signed": false,
+          "width_expr": "WIDTH-1:0",
+          "unpacked_range": "0:DEPTH-1"
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "proc_0",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "wclk"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "ref": "wenc"
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "RAM_MEM"
+                    },
+                    "index": {
+                      "ref": "waddr"
+                    }
+                  },
+                  "rhs": {
+                    "ref": "wdata"
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "proc_1",
+          "type": "always",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "rclk"
+            }
+          ],
+          "body": [
+            {
+              "type": "if",
+              "condition": {
+                "ref": "renc"
+              },
+              "then": [
+                {
+                  "type": "assignment",
+                  "lhs": {
+                    "ref": "rdata"
+                  },
+                  "rhs": {
+                    "type": "bit_select",
+                    "source": {
+                      "ref": "RAM_MEM"
+                    },
+                    "index": {
+                      "ref": "raddr"
+                    }
+                  },
+                  "blocking": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "assignments": [],
+      "instances": []
+    }
+  ],
+  "design_hierarchy": {
+    "top": "RefModule",
+    "tree": {
+      "RefModule": [
+        "dual_port_RAM"
+      ],
+      "dual_port_RAM": []
+    }
+  }
+}
