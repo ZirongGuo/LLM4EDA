@@ -10,7 +10,7 @@ SCHEMA_PATH = os.path.join(SELF_DIR, '..', 'specs', 'schema_v1.json')
 
 STMT_TYPES = frozenset([
     'assignment', 'if', 'case', 'for', 'while', 'repeat', 'forever',
-    'return', 'instance', 'call_stmt',
+    'return', 'instance',
 ])
 
 
@@ -53,9 +53,6 @@ def is_expr(obj, _depth=0):
                 and isinstance(obj['function'], str)
                 and isinstance(obj['arguments'], list)
                 and all(is_expr(a, _depth + 1) for a in obj['arguments']))
-    if t == 'part_select':
-        return ('base' in obj and 'op' in obj and 'width' in obj
-                and is_expr(obj['base'], _depth + 1) and is_expr(obj['width'], _depth + 1))
     return False
 
 
@@ -271,22 +268,7 @@ def validate_semantic_rules(instance):
                 if isinstance(func, dict):
                     body = func.get('body', [])
                     if not has_return_stmt(body):
-                        func_name = func.get('name', '')
-                        def _has_fn_assign(stmts):
-                            for s in stmts:
-                                if not isinstance(s, dict):
-                                    continue
-                                if (s.get('type') == 'assignment' and
-                                    isinstance(s.get('lhs'), dict) and
-                                    s['lhs'].get('ref') == func_name):
-                                    return True
-                                for key in ('then', 'else', 'body'):
-                                    sub = s.get(key)
-                                    if isinstance(sub, list) and _has_fn_assign(sub):
-                                        return True
-                            return False
-                        if not _has_fn_assign(body):
-                            return False
+                        return False
 
     metadata = instance.get('metadata', {})
     if isinstance(metadata, dict):

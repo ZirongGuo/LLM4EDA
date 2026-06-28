@@ -1424,6 +1424,7 @@
     messages: [],
     isProcessing: false,
     pendingModification: null,
+    streamAbortController: null,
   }
 
   function initChat() {
@@ -1464,6 +1465,8 @@
     renderChatMessages()
   }
 
+  var chatMsgIdCounter = 0
+
   function renderChatMessages() {
     var container = document.getElementById("chatMessages")
     if (!container) return
@@ -1471,15 +1474,27 @@
     chatState.messages.forEach(function (msg) {
       var div = document.createElement("div")
       div.className = "chat-msg chat-msg-" + (msg.role === "user" ? "user" : msg.role === "assistant" ? "assistant" : "system")
+      if (msg.pending) div.classList.add("pending")
 
       var label = document.createElement("div")
       label.className = "msg-label"
       label.textContent = msg.role === "user" ? "You" : msg.role === "assistant" ? "Assistant" : "System"
       div.appendChild(label)
 
-      var text = document.createElement("div")
-      text.textContent = msg.content
-      div.appendChild(text)
+      var body = document.createElement("div")
+      body.className = "msg-body"
+
+      // Assistant 非 JSON 消息 → Markdown 渲染（流式传输中则用纯文本避免闪烁）
+      if (msg.role === "assistant" && !(msg.extra && msg.extra.type === "modification")) {
+        if (msg.pending) {
+          body.textContent = msg.content
+        } else {
+          body.innerHTML = renderMarkdown(msg.content)
+        }
+      } else {
+        body.textContent = msg.content
+      }
+      div.appendChild(body)
 
       if (msg.extra && msg.extra.type === "modification") {
         var acts = document.createElement("div")
@@ -1505,6 +1520,62 @@
       container.appendChild(div)
     })
     container.scrollTop = container.scrollHeight
+  }
+
+  function renderMarkdown(text) {
+    if (!text) return ""
+    var html = text
+
+    // Escape HTML first
+    html = html.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+
+    // Fenced code blocks (before inline to avoid matching backticks inside blocks)
+    html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, function (_, lang, code) {
+      return "<pre><code>" + code.replace(/\n/g, "\n") + "</code></pre>"
+    })
+
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, "<code>$1</code>")
+
+    // Bold and italic
+    html = html.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>")
+    html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    html = html.replace(/\*(.+?)\*/g, "<em>$1</em>")
+
+    // Headings
+    html = html.replace(/^###### (.+)$/gm, "<h6>$1</h6>")
+    html = html.replace(/^##### (.+)$/gm, "<h5>$1</h5>")
+    html = html.replace(/^#### (.+)$/gm, "<h4>$1</h4>")
+    html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>")
+    html = html.replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    html = html.replace(/^# (.+)$/gm, "<h1>$1</h1>")
+
+    // Blockquotes
+    html = html.replace(/^&gt; (.+)$/gm, "<blockquote>$1</blockquote>")
+
+    // Unordered lists
+    html = html.replace(/^[\-\*] (.+)$/gm, "<li>$1</li>")
+    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, "<ul>$1</ul>")
+
+    // Ordered lists
+    html = html.replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
+
+    // Links
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+
+    // Horizontal rules
+    html = html.replace(/^(---|\*\*\*)\s*$/gm, "<hr>")
+
+    // Double newlines → paragraph break
+    html = html.replace(/\n\n/g, "</p><p>")
+    // Single newlines → <br>
+    html = html.replace(/\n/g, "<br>")
+    // Wrap in paragraph if not already
+    if (!/^<[hpoulb]/.test(html)) {
+      html = "<p>" + html + "</p>"
+    }
+
+    return html
   }
 
   function generateDiffItems(original, modified, maxItems) {
@@ -1667,6 +1738,11 @@
     chatState.isProcessing = true
     updateChatSendBtn()
 
+    // Add a pending streaming message placeholder
+    var streamMsg = { role: "assistant", content: "", pending: true }
+    chatState.messages.push(streamMsg)
+    renderChatMessages()
+
     var systemPrompt = "You are an EDA expert specializing in Verilog and digital design. The user has loaded a design in JSON format. Respond helpfully and concisely.\n\nIf the user asks a question, answer directly.\n\nIf the user requests a modification, return a JSON object with two fields:\n1. \"modified_json\": the complete modified design JSON (include ALL modules, not just the focused one)\n2. \"explanation\": a brief description of what changed\n\nWrap the JSON in ```json ... ``` markers."
 
     var designContext = buildDesignContext(rawDesign)
@@ -1678,16 +1754,17 @@
     ]
 
     // Try same-origin proxy first (used with --serve mode), fallback to direct
-    callViaProxy(messages)
+    callViaProxy(messages, streamMsg)
   }
 
-  function callViaProxy(messages) {
+  function callViaProxy(messages, streamMsg) {
     var body = {
       api_url: chatState.config.url,
       api_key: chatState.config.key,
       model: chatState.config.model || "gpt-4o",
       messages: messages,
       temperature: 0.2,
+      stream: false,
     }
 
     fetch("/api/chat", {
@@ -1697,35 +1774,44 @@
     })
     .then(function (res) {
       if (res.status === 404) {
-        // Proxy not available, fall back to direct API call (handles its own cleanup)
-        callDirect(messages)
+        callDirectStream(messages, streamMsg)
         throw new Error("__PROXY_FALLBACK__")
       }
-      if (!res.ok) return res.json().then(function (j) { throw new Error(j.error || "HTTP " + res.status) })
+      if (!res.ok) return res.json().then(function (j) { throw new Error(j.error || "HTTP " + res.status + " (proxy)") })
       return res.json()
     })
     .then(function (data) {
+      var reply = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content
+      streamMsg.content = reply || "(empty response)"
+      streamMsg.pending = false
       chatState.isProcessing = false
       updateChatSendBtn()
-      handleLLMResponse(data)
+      finalizeStreamMessage(streamMsg, reply || "")
+      renderChatMessages()
     })
     .catch(function (err) {
       if (err.message === "__PROXY_FALLBACK__") return
-      if (err.message === "Failed to fetch" || err.name === "TypeError") {
-        callDirect(messages)
-        return
-      }
+      streamMsg.content = "Error: " + err.message
+      streamMsg.pending = false
       chatState.isProcessing = false
       updateChatSendBtn()
-      addChatMessage("assistant", "Error: " + err.message)
+      renderChatMessages()
     })
   }
 
-  function callDirect(messages) {
+  function callDirectStream(messages, streamMsg) {
+    // Abort any in-flight stream
+    if (chatState.streamAbortController) {
+      chatState.streamAbortController.abort()
+    }
+    var controller = new AbortController()
+    chatState.streamAbortController = controller
+
     var body = {
       model: chatState.config.model || "gpt-4o",
       messages: messages,
       temperature: 0.2,
+      stream: true,
     }
 
     fetch(chatState.config.url, {
@@ -1735,29 +1821,94 @@
         "Authorization": "Bearer " + chatState.config.key,
       },
       body: JSON.stringify(body),
+      signal: controller.signal,
     })
     .then(function (res) {
       if (!res.ok) return res.text().then(function (t) { throw new Error("HTTP " + res.status + ": " + t.slice(0, 200)) })
-      return res.json()
+      return readSSEStream(res, streamMsg)
     })
-    .then(function (data) {
+    .then(function (fullContent) {
+      streamMsg.pending = false
       chatState.isProcessing = false
       updateChatSendBtn()
-      handleLLMResponse(data)
+      streamMsg.content = fullContent
+      finalizeStreamMessage(streamMsg, fullContent)
+      renderChatMessages()
     })
     .catch(function (err) {
+      if (err.name === "AbortError") return  // User cancelled
+      streamMsg.pending = false
       chatState.isProcessing = false
       updateChatSendBtn()
-      var hint = ""
-      if (err.message.indexOf("HTTP 404") >= 0) {
-        hint = "\n\nHint: Check your API URL. OpenAI endpoint: https://api.openai.com/v1/chat/completions"
-      } else if (err.message.indexOf("HTTP 401") >= 0 || err.message.indexOf("HTTP 403") >= 0) {
-        hint = "\n\nHint: Check your API Key."
-      } else if (err.message.indexOf("Failed to fetch") >= 0) {
-        hint = "\n\nHint: CORS issue — use 'python scripts/visualize_block.py --serve' to enable the proxy."
+      if (streamMsg.content) {
+        // Partial content received — keep it
+      } else {
+        var hint = ""
+        if (err.message.indexOf("HTTP 404") >= 0) {
+          hint = "\n\nHint: Check your API URL. OpenAI endpoint: https://api.openai.com/v1/chat/completions"
+        } else if (err.message.indexOf("HTTP 401") >= 0 || err.message.indexOf("HTTP 403") >= 0) {
+          hint = "\n\nHint: Check your API Key."
+        } else if (err.message.indexOf("Failed to fetch") >= 0) {
+          hint = "\n\nHint: CORS issue — use 'python scripts/visualize_block.py --serve' to enable the proxy."
+        }
+        streamMsg.content = "Error: " + err.message + hint
       }
-      addChatMessage("assistant", "Error: " + err.message + hint)
+      renderChatMessages()
     })
+  }
+
+  function readSSEStream(response, streamMsg) {
+    var reader = response.body.getReader()
+    var decoder = new TextDecoder()
+    var buffer = ""
+    var fullContent = ""
+
+    function process() {
+      return reader.read().then(function (result) {
+        if (result.done) return fullContent
+
+        buffer += decoder.decode(result.value, { stream: true })
+        var lines = buffer.split("\n")
+        // Keep incomplete last line in buffer
+        buffer = lines.pop() || ""
+
+        for (var i = 0; i < lines.length; i++) {
+          var raw = lines[i]
+          // Strip \r and leading/trailing whitespace
+          var line = raw.replace(/\r$/, "").trim()
+          if (!line) continue
+
+          // Match "data:" prefix (with or without space after colon)
+          var dataPrefix = /^data:\s?/
+          if (!dataPrefix.test(line)) continue
+
+          var data = line.replace(dataPrefix, "")
+          // Skip empty payloads and [DONE] marker
+          if (!data || data === "[DONE]") continue
+
+          try {
+            var parsed = JSON.parse(data)
+            var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta
+            if (delta && delta.content) {
+              fullContent += delta.content
+              streamMsg.content = fullContent
+              // Throttle renders: only re-render every ~50ms for smooth UI
+              if (!streamMsg._lastRender || Date.now() - streamMsg._lastRender > 50) {
+                streamMsg._lastRender = Date.now()
+                renderChatMessages()
+                // Auto-scroll to bottom
+                var container = document.getElementById("chatMessages")
+                if (container) container.scrollTop = container.scrollHeight
+              }
+            }
+          } catch (_) {}
+        }
+
+        return process()
+      })
+    }
+
+    return process()
   }
 
   function handleLLMResponse(data) {
@@ -1769,6 +1920,61 @@
       return
     }
     processLLMReply(reply)
+  }
+
+  function finalizeStreamMessage(streamMsg, fullContent) {
+    // Detect if the streamed content is a JSON modification
+    var reply = fullContent || ""
+    try {
+      var cleanReply = reply.replace(/```[\s\S]*?```/g, "").trim()
+      var blocks = []
+      var re = /```(?:json|JSON)?\s*([\s\S]*?)```/g
+      var m
+      while ((m = re.exec(reply)) !== null) {
+        var content = m[1].trim()
+        if (content.charAt(0) === "{" || content.charAt(0) === "[") {
+          blocks.push(content)
+        }
+      }
+      var trimmed = reply.trim()
+      if (blocks.length === 0 && (trimmed.charAt(0) === "{" || trimmed.charAt(0) === "[")) {
+        blocks.push(trimmed)
+      }
+
+      for (var i = 0; i < blocks.length; i++) {
+        try {
+          var parsed = JSON.parse(blocks[i])
+          if (parsed && typeof parsed === "object") {
+            var mod = parsed.modified_json
+            if (typeof mod === "string") {
+              try { mod = JSON.parse(mod) } catch (_e) {}
+            }
+            if (mod && typeof mod === "object") {
+              var explanation = parsed.explanation || "Modified."
+              streamMsg.content = cleanReply || explanation
+              streamMsg.extra = {
+                type: "modification",
+                original: rawDesign,
+                modified: mod,
+              }
+              chatState.pendingModification = mod
+              return
+            }
+            if (parsed.modules && Array.isArray(parsed.modules)) {
+              streamMsg.content = cleanReply || "Design modified."
+              streamMsg.extra = {
+                type: "modification",
+                original: rawDesign,
+                modified: parsed,
+              }
+              chatState.pendingModification = parsed
+              return
+            }
+          }
+        } catch (_e) {}
+      }
+    } catch (_) {}
+    // No JSON modification detected — keep as plain markdown text
   }
 
   function processLLMReply(reply) {
@@ -1845,8 +2051,31 @@
 
   function updateChatSendBtn() {
     var btn = document.getElementById("sendChatBtn")
+    var stopBtn = document.getElementById("stopChatBtn")
     if (btn) btn.disabled = chatState.isProcessing
+    if (stopBtn) stopBtn.style.display = chatState.isProcessing ? "" : "none"
+    if (btn) btn.style.display = chatState.isProcessing ? "none" : ""
   }
+
+  // Stop button aborts streaming
+  var stopChatBtn = document.getElementById("stopChatBtn")
+  if (stopChatBtn) stopChatBtn.addEventListener("click", function () {
+    if (chatState.streamAbortController) {
+      chatState.streamAbortController.abort()
+      chatState.streamAbortController = null
+    }
+    chatState.isProcessing = false
+    updateChatSendBtn()
+    // Mark last pending message as done
+    var msgs = chatState.messages
+    if (msgs.length && msgs[msgs.length - 1].pending) {
+      msgs[msgs.length - 1].pending = false
+      if (!msgs[msgs.length - 1].content) {
+        msgs[msgs.length - 1].content = "(stopped)"
+      }
+    }
+    renderChatMessages()
+  })
 
   function switchInspectorTab(tab) {
     document.querySelectorAll(".inspector-tab").forEach(function (b) { b.classList.toggle("active", b.dataset.panel === tab) })
@@ -1870,8 +2099,14 @@
 
   var clearBtn = document.getElementById("clearChat")
   if (clearBtn) clearBtn.addEventListener("click", function () {
+    if (chatState.streamAbortController) {
+      chatState.streamAbortController.abort()
+      chatState.streamAbortController = null
+    }
     chatState.messages = []
     chatState.pendingModification = null
+    chatState.isProcessing = false
+    updateChatSendBtn()
     renderChatMessages()
   })
 
