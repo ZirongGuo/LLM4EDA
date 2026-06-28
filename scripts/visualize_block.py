@@ -10,6 +10,12 @@ import os
 import sys
 from html import escape
 from pathlib import Path
+try:
+    from http.server import HTTPServer, SimpleHTTPRequestHandler
+    import webbrowser
+    _HAS_SERVE = True
+except ImportError:
+    _HAS_SERVE = False
 
 
 def generate_dot(design):
@@ -324,6 +330,7 @@ def generate_interactive_html(design):
     template = (frontend_dir / "template.html").read_text(encoding="utf-8")
     css = (frontend_dir / "style.css").read_text(encoding="utf-8")
     js = (frontend_dir / "app.js").read_text(encoding="utf-8")
+    elk_js = (frontend_dir / "elk.bundled.js").read_text(encoding="utf-8")
 
     model = _build_visual_model(design)
     title = model.get("top") or "Block Design"
@@ -334,17 +341,118 @@ def generate_interactive_html(design):
         .replace("__TITLE__", escape(title))
         .replace("__CSS__", css)
         .replace("__MODEL__", payload)
+        .replace("__ELK_JS__", elk_js)
         .replace("__JS__", js)
     )
 
 
+def serve(host="127.0.0.1", port=8080):
+    """启动本地 HTTP 服务器，提供交互式前端 + LLM API 代理。"""
+    frontend_dir = Path(__file__).resolve().parent / "visualizer_frontend"
+    if not (frontend_dir / "index.html").exists():
+        print(f"[ERR] 未找到 {frontend_dir / 'index.html'}，请确保 visualizer_frontend 目录完整。")
+        sys.exit(1)
+
+    os.chdir(str(frontend_dir))
+
+    class ProxyHandler(SimpleHTTPRequestHandler):
+        def log_message(self, format, *args):
+            print(f"[{self.address_string()}] {format % args}")
+
+        def end_headers(self):
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Cache-Control", "no-cache")
+            super().end_headers()
+
+        def do_OPTIONS(self):
+            self.send_response(204)
+            self.end_headers()
+
+        def do_POST(self):
+            if self.path != "/api/chat":
+                self.send_error(404)
+                return
+
+            content_len = int(self.headers.get("Content-Length", 0))
+            body = json.loads(self.rfile.read(content_len)) if content_len else {}
+
+            api_url = body.get("api_url", "").strip()
+            api_key = body.get("api_key", "").strip()
+            if not api_url:
+                self._json_response({"error": "api_url is required"}, 400)
+                return
+            if not api_key:
+                self._json_response({"error": "api_key is required"}, 400)
+                return
+
+            payload = {
+                "model": body.get("model", "gpt-4o"),
+                "messages": body.get("messages", []),
+                "temperature": body.get("temperature", 0.2),
+                **({k: body[k] for k in ("max_tokens", "stream") if k in body}),
+            }
+
+            try:
+                import urllib.request
+                req = urllib.request.Request(
+                    api_url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={
+                        "Content-Type": "application/json",
+                        "Authorization": f"Bearer {api_key}",
+                    },
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=120) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
+                self._json_response(result)
+            except urllib.error.HTTPError as e:
+                err_body = e.read().decode("utf-8", errors="replace")[:500]
+                self._json_response({"error": f"API HTTP {e.code}: {err_body}"}, e.code)
+            except urllib.error.URLError as e:
+                self._json_response({"error": f"Connection failed: {e.reason}"}, 502)
+            except Exception as e:
+                self._json_response({"error": str(e)}, 500)
+
+        def _json_response(self, data, status=200):
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.end_headers()
+            self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
+
+    server = HTTPServer((host, port), ProxyHandler)
+    url = f"http://{host}:{port}"
+    print(f"[OK] 交互式可视化服务器已启动: {url}")
+    print(f"      LLM API 代理: {url}/api/chat (POST)")
+    print("      打开浏览器访问上面的地址，拖拽或点击上传 JSON 文件即可可视化。")
+    print("      按 Ctrl+C 停止服务器。\n")
+    webbrowser.open(url)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[OK] 服务器已停止。")
+        server.server_close()
+
+
 def main():
     parser = argparse.ArgumentParser(description="规范 JSON → Block Design 可视化")
-    parser.add_argument("input", help="输入的规范 JSON 文件")
+    parser.add_argument("input", nargs="?", help="输入的规范 JSON 文件")
     parser.add_argument("--format", choices=["svg", "png", "dot", "html"], default="svg", help="输出格式")
     parser.add_argument("-o", "--output", default="design_block.svg", help="输出文件路径")
     parser.add_argument("--html", action="store_true", help="同时生成交互式 HTML")
+    parser.add_argument("--serve", action="store_true", help="启动本地交互式可视化服务器")
+    parser.add_argument("--host", default="127.0.0.1", help="服务器监听地址 (默认 127.0.0.1)")
+    parser.add_argument("--port", type=int, default=8080, help="服务器端口 (默认 8080)")
     args = parser.parse_args()
+
+    if args.serve:
+        return serve(args.host, args.port)
+
+    if not args.input:
+        parser.print_help()
+        sys.exit(1)
 
     with open(args.input) as f:
         design = json.load(f)

@@ -3,17 +3,96 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>JSON Visualization - __TITLE__</title>
+<title>Block Design Visualizer</title>
+<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/jsondiffpatch@0.4.1/dist/jsondiffpatch.umd.min.js"></script>
 <style>
-__CSS__
+#uploadOverlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#uploadOverlay.hidden { display: none !important; }
+.upload-box {
+  background: var(--panel);
+  border: 2px dashed var(--line);
+  border-radius: 16px;
+  padding: 60px 40px;
+  text-align: center;
+  max-width: 520px;
+  width: 90%;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.upload-box:hover, .upload-box.dragover {
+  border-color: var(--blue);
+  background: #f0f7ff;
+}
+.upload-box .icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+.upload-box h2 { margin: 0 0 8px; font-size: 22px; }
+.upload-box p { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+.upload-box .example-btn {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 20px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  transition: border-color .15s;
+}
+.upload-box .example-btn:hover { border-color: var(--blue); color: var(--blue); }
+#fileInput { display: none; }
+.restore-banner {
+  background: var(--panel);
+  border: 1px solid var(--blue);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 520px;
+  width: 90%;
+  box-shadow: 0 4px 16px rgba(37,99,235,.12);
+}
+.restore-icon { font-size: 32px; }
+.restore-text { flex: 1; }
+.restore-title { font-weight: 700; font-size: 15px; }
+.restore-file { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.restore-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.restore-btn {
+  padding: 8px 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.restore-btn.primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+.restore-btn.primary:hover { opacity: .85; }
+.restore-btn:hover:not(.primary) { border-color: var(--blue); }
 </style>
 </head>
 <body>
 
 <input type="file" id="fileInput" accept=".json,application/json">
 
-<div id="uploadOverlay" class="hidden">
+<div id="uploadOverlay">
   <div id="restoreBanner" class="restore-banner" style="display:none">
     <div class="restore-icon">&#128190;</div>
     <div class="restore-text">
@@ -37,9 +116,9 @@ __CSS__
 <div class="app">
   <aside class="sidebar">
     <div class="pane-head">
-      <h1>JSON Visualization</h1>
-      <div class="subtle">Top: <strong id="topName"></strong> &middot; <span id="moduleCount"></span> modules</div>
-      <button class="upload-btn" id="reuploadBtn" style="margin-top:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);cursor:pointer;padding:4px 10px;font:inherit;font-size:12px;color:var(--text)">&#128228; Load File</button>
+      <h1>Block Design Visualizer</h1>
+      <div class="subtle">Top: <strong id="topName"></strong> &middot; <span id="moduleCount">0</span> modules</div>
+      <button class="upload-btn" id="reuploadBtn" title="Load another JSON file" style="margin-top:8px;border:1px solid var(--line);border-radius:6px;background:var(--panel);cursor:pointer;padding:4px 10px;font:inherit;font-size:12px;color:var(--text)">&#128228; Load File</button>
     </div>
     <div class="search">
       <input id="moduleSearch" type="search" placeholder="Search module or instance">
@@ -85,7 +164,7 @@ __CSS__
         <button class="inspector-tab active" data-panel="info">Inspector</button>
         <button class="inspector-tab" data-panel="chat">Chat</button>
       </div>
-      <div id="inspectorHint" class="subtle">Select a node or edge</div>
+      <div id="inspectorHint" class="subtle">Load a design to begin</div>
     </div>
 
     <div class="inspector-content" data-content="info">
@@ -128,15 +207,8 @@ __CSS__
   </aside>
 </div>
 
-<script>
-window.__VISUALIZER_MODEL__ = __MODEL__;
-</script>
-<script>
-__ELK_JS__
-</script>
-<script>
-__JS__
-</script>
+<script src="elk.bundled.js"></script>
+<script src="app.js"></script>
 <script>
 (function () {
   var overlay = document.getElementById("uploadOverlay")
@@ -149,39 +221,79 @@ __JS__
     window.handleFileUpload(file)
   }
 
-  if (dropZone) {
-    dropZone.addEventListener("click", function () { fileInput.click() })
-    dropZone.addEventListener("dragover", function (e) { e.preventDefault(); dropZone.classList.add("dragover") })
-    dropZone.addEventListener("dragleave", function () { dropZone.classList.remove("dragover") })
-    dropZone.addEventListener("drop", function (e) {
-      e.preventDefault()
-      dropZone.classList.remove("dragover")
-      var file = e.dataTransfer.files[0]
-      if (file && file.name.endsWith(".json")) loadFile(file)
-      else alert("Please drop a .json file.")
-    })
-  }
+  dropZone.addEventListener("click", function () { fileInput.click() })
 
-  if (fileInput) fileInput.addEventListener("change", function () { loadFile(fileInput.files[0]); fileInput.value = "" })
-  if (reuploadBtn) reuploadBtn.addEventListener("click", function () { fileInput.click() })
-  var browseBtn = document.getElementById("browseBtn")
-  if (browseBtn) browseBtn.addEventListener("click", function (e) { e.stopPropagation(); fileInput.click() })
+  dropZone.addEventListener("dragover", function (e) {
+    e.preventDefault()
+    dropZone.classList.add("dragover")
+  })
+  dropZone.addEventListener("dragleave", function () {
+    dropZone.classList.remove("dragover")
+  })
+  dropZone.addEventListener("drop", function (e) {
+    e.preventDefault()
+    dropZone.classList.remove("dragover")
+    var file = e.dataTransfer.files[0]
+    if (file && file.name.endsWith(".json")) {
+      loadFile(file)
+    } else {
+      alert("Please drop a .json file.")
+    }
+  })
+
+  fileInput.addEventListener("change", function () {
+    loadFile(fileInput.files[0])
+    fileInput.value = ""
+  })
+
+  reuploadBtn.addEventListener("click", function () {
+    fileInput.click()
+  })
+
+  document.getElementById("browseBtn").addEventListener("click", function (e) {
+    e.stopPropagation()
+    fileInput.click()
+  })
+
+  document.getElementById("loadExample").addEventListener("click", function (e) {
+    e.stopPropagation()
+    // Try to load from default path or URL param
+    var params = new URLSearchParams(window.location.search)
+    var exampleUrl = params.get("example") || "example.json"
+    fetch(exampleUrl)
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status)
+        return r.json()
+      })
+      .then(function (data) {
+        window.loadModelFromJson(data)
+      })
+      .catch(function () {
+        alert("No example.json found. Please upload a file.")
+      })
+  })
+
+  // Support URL param: ?json=path/to/file.json
+  var jsonParam = new URLSearchParams(window.location.search).get("json")
+  if (jsonParam) {
+    fetch(jsonParam)
+      .then(function (r) { return r.json() })
+      .then(function (data) { window.loadModelFromJson(data) })
+      .catch(function () { /* silent */ })
+  }
 
   // Restore last session
   var saved = window.getSavedDesign && window.getSavedDesign()
   if (saved) {
     document.getElementById("lastFileName").textContent = saved.fileName || "unnamed.json"
-    var banner = document.getElementById("restoreBanner")
-    if (banner) {
-      banner.style.display = "flex"
-      document.getElementById("restoreBtn").addEventListener("click", function () {
-        window.loadModelFromJson(saved.data, saved.fileName)
-      })
-      document.getElementById("clearSavedBtn").addEventListener("click", function () {
-        window.clearSavedDesign()
-        banner.style.display = "none"
-      })
-    }
+    document.getElementById("restoreBanner").style.display = "flex"
+    document.getElementById("restoreBtn").addEventListener("click", function () {
+      window.loadModelFromJson(saved.data, saved.fileName)
+    })
+    document.getElementById("clearSavedBtn").addEventListener("click", function () {
+      window.clearSavedDesign()
+      document.getElementById("restoreBanner").style.display = "none"
+    })
   }
 })()
 </script>

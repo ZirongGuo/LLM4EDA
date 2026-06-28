@@ -69,7 +69,8 @@ def _gen_module(mod):
             if signed:
                 type_parts.append("signed")
             type_str = " ".join(type_parts)
-            port_strs.append(f"  {pdir} {type_str} {width_str} {p['name']}".rstrip())
+            unpacked = f" [{p['unpacked_range']}]" if p.get("unpacked_range") else ""
+            port_strs.append(f"  {pdir} {type_str} {width_str} {p['name']}{unpacked}".rstrip())
 
         if not has_params:
             lines.append(f"module {name} (")
@@ -98,7 +99,10 @@ def _gen_module(mod):
             init = ""
             if s.get("initial_value"):
                 init = f" = {s['initial_value']}"
-            lines.append(f"  {stype} {signed}{width}{s['name']}{init};")
+            unpacked = ""
+            if s.get("unpacked_range"):
+                unpacked = f" [{s['unpacked_range']}]"
+            lines.append(f"  {stype} {signed}{width}{s['name']}{unpacked}{init};")
 
     if mod.get("functions"):
         lines.append("")
@@ -109,6 +113,11 @@ def _gen_module(mod):
         lines.append("")
         for task in mod["tasks"]:
             lines.extend(_gen_task(task))
+
+    if mod.get("initial_blocks"):
+        lines.append("")
+        for ib in mod["initial_blocks"]:
+            lines.extend(_gen_always(ib, keyword="initial"))
 
     if mod.get("always_blocks"):
         lines.append("")
@@ -144,7 +153,7 @@ def _gen_function(func):
     ret = func["return_type"]
     inputs = func.get("inputs", [])
     if inputs:
-        input_strs = [f"input {i['type']} {i['name']}" for i in inputs]
+        input_strs = [f"input {i.get('data_type', i.get('type', 'wire'))} {i['name']}" for i in inputs]
         lines.append(f"  function {ret} {func['name']}({', '.join(input_strs)});")
     else:
         lines.append(f"  function {ret} {func['name']};")
@@ -175,9 +184,9 @@ def _gen_task(task):
     return lines
 
 
-def _gen_always(ab):
+def _gen_always(ab, keyword=None):
     lines = []
-    ab_type = ab["type"]
+    ab_type = keyword or ab["type"]
     sens_items = ab.get("sensitivity", [])
     if sens_items:
         # Check for wildcard sensitivity
@@ -230,6 +239,35 @@ def _gen_instance(inst):
 def _gen_generate(gen):
     lines = []
     gtype = gen.get("type", "if")
+    if gtype == "gen_case":
+        lines.append("  generate")
+        expr = emit_expr(gen["expression"])
+        lines.append(f"    case ({expr})")
+        for item in gen.get("items", []):
+            val = emit_expr(item["value"])
+            lines.append(f"      {val}: begin")
+            for bi in item.get("body", []):
+                if bi.get("type") == "instance":
+                    for l in _gen_instance(bi):
+                        lines.append("        " + l)
+                elif "lhs" in bi:
+                    lhs = emit_expr(bi["lhs"])
+                    rhs = emit_expr(bi["rhs"])
+                    lines.append(f"        assign {lhs} = {rhs};")
+            lines.append("      end")
+        for bi in gen.get("default", []):
+            lines.append("      default: begin")
+            if bi.get("type") == "instance":
+                for l in _gen_instance(bi):
+                    lines.append("        " + l)
+            elif "lhs" in bi:
+                lhs = emit_expr(bi["lhs"])
+                rhs = emit_expr(bi["rhs"])
+                lines.append(f"        assign {lhs} = {rhs};")
+            lines.append("      end")
+        lines.append("    endcase")
+        lines.append("  endgenerate")
+        return lines
     if gtype == "gen_for":
         init_list = gen.get("init", [])
         step_list = gen.get("step", [])
@@ -271,18 +309,49 @@ def _gen_generate(gen):
             lines.append(f"    assign{delay} {lhs} = {rhs};")
     else_body = gen.get("else_body", [])
     if else_body:
-        lines.append("    end else begin")
-        for item in else_body:
-            if item.get("type") == "instance":
-                for l in _gen_instance(item):
-                    lines.append("    " + l)
-            elif "lhs" in item:
-                delay = ""
-                if item.get("delay"):
-                    delay = f" #{item['delay']['value']}"
-                lhs = emit_expr(item["lhs"])
-                rhs = emit_expr(item["rhs"])
-                lines.append(f"    assign{delay} {lhs} = {rhs};")
+        if len(else_body) == 1 and isinstance(else_body[0], dict) and "condition" in else_body[0]:
+            # Nested else-if generate
+            elif_gen = else_body[0]
+            elif_cond = emit_expr(elif_gen["condition"])
+            lines.append(f"    end else if ({elif_cond}) begin")
+            for item in elif_gen.get("body", []):
+                if item.get("type") == "instance":
+                    for l in _gen_instance(item):
+                        lines.append("    " + l)
+                elif "lhs" in item:
+                    delay = ""
+                    if item.get("delay"):
+                        delay = f" #{item['delay']['value']}"
+                    lhs = emit_expr(item["lhs"])
+                    rhs = emit_expr(item["rhs"])
+                    lines.append(f"    assign{delay} {lhs} = {rhs};")
+            elif_else = elif_gen.get("else_body", [])
+            if elif_else:
+                lines.append("    end else begin")
+                for item in elif_else:
+                    if item.get("type") == "instance":
+                        for l in _gen_instance(item):
+                            lines.append("    " + l)
+                    elif "lhs" in item:
+                        delay = ""
+                        if item.get("delay"):
+                            delay = f" #{item['delay']['value']}"
+                        lhs = emit_expr(item["lhs"])
+                        rhs = emit_expr(item["rhs"])
+                        lines.append(f"    assign{delay} {lhs} = {rhs};")
+        else:
+            lines.append("    end else begin")
+            for item in else_body:
+                if item.get("type") == "instance":
+                    for l in _gen_instance(item):
+                        lines.append("    " + l)
+                elif "lhs" in item:
+                    delay = ""
+                    if item.get("delay"):
+                        delay = f" #{item['delay']['value']}"
+                    lhs = emit_expr(item["lhs"])
+                    rhs = emit_expr(item["rhs"])
+                    lines.append(f"    assign{delay} {lhs} = {rhs};")
     lines.append("    end")
     lines.append(f"  endgenerate")
     return lines
