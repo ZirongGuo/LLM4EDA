@@ -1,0 +1,930 @@
+{
+  "summary": {
+    "total": 99,
+    "passed": 99,
+    "failed": 0,
+    "errors": 0
+  },
+  "categories": {
+    "positive": {
+      "total": 35,
+      "correct": 35
+    },
+    "negative": {
+      "total": 50,
+      "correct": 50
+    },
+    "robustness": {
+      "total": 14,
+      "correct": 14
+    }
+  },
+  "confusion_matrix": {
+    "tp": 35,
+    "fp": 5,
+    "tn": 59,
+    "fn": 0,
+    "accuracy": 0.9495,
+    "precision": 0.875,
+    "recall": 1.0,
+    "f1": 0.9333
+  },
+  "rule_coverage": {
+    "total_rules": 50,
+    "covered": 50,
+    "rate": 100.0
+  },
+  "details": [
+    {
+      "file": "positive/case_001_example.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_002_counter.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_003_minimal.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_004_multiport.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_005_nested_instance.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_006_param_design.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_007_fsm.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_008_generate.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_009_func_task.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_010_complex_expr.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_011_empty_meta.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_012_hierarchy.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_013_include_defines.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_014_signed_ports.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_015_wide_bus.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_016_multi_always.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_017_package_usage.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_018_fifo_template.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_019_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_020_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_021_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_022_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_023_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_024_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_025_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_026_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_027_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_028_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_029_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_030_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_031_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_032_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_033_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_034_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "positive/case_035_variant.json",
+      "category": "positive",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_version/missing_version.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_metadata/missing_metadata.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_modules/missing_modules.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_design_name/missing_metadata_design_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_top_module/missing_metadata_top_module.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_module_name/missing_module_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_ports/missing_module_ports.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_signals/missing_module_signals.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_port_direction/missing_port_direction.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_port_data_type/missing_port_data_type.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_port_width/missing_port_width.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_signal_type/missing_signal_type.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_signal_width/missing_signal_width.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_define_name/missing_define_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_define_value/missing_define_value.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_param_name/missing_parameter_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_param_value/missing_parameter_value.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_required_metadata_source_files_type/source_files_not_array.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_version/version_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_metadata/metadata_as_array.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_includes/includes_as_object.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_modules/modules_as_object.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_direction/port_direction_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_width/port_width_as_string.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_port_name/port_name_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_signal_name/signal_name_as_array.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_signal_type/signal_type_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_design_name/design_name_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_top_module/top_module_as_array.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_define_item/defines_item_as_string.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_module_name/module_name_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_include_item/includes_item_not_string.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_signed/signed_as_string.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_enum_direction_bidir/direction_bidir.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_enum_direction_invalid/direction_invalid.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_enum_always_type/bad_always_type.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_metadata_date/bad_date_format.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B008_dup_module_name/dup_module_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B002_dup_port_name/dup_port_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B001_dup_signal_name/dup_signal_name.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B003_bad_instance/nonexistent_module.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B005_param_value_type/param_value_as_number.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_type_defines/defines_as_object.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B004_port_count/port_count_mismatch.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B006_always_id_dup/always_id_dup.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B007_instance_name_dup/instance_name_dup.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B009_direction_mismatch/direction_mismatch.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B010_version_format/bad_version_format.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B011_func_no_return/function_no_return.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "negative/rule_B012_comb_sensitivity/comb_with_sensitivity.json",
+      "category": "negative",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/empty_file.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/not_json.txt",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/xml_content.xml",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/truncated.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/deep_nested_600.json",
+      "category": "robustness",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "robustness/long_version_string.json",
+      "category": "robustness",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "robustness/null_version.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/boolean_root.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/array_root.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/unicode_design_name.json",
+      "category": "robustness",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "robustness/deeply_nested_meta.json",
+      "category": "robustness",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "robustness/huge_width.json",
+      "category": "robustness",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": "",
+      "expected_exit_code": 0,
+      "correct": true
+    },
+    {
+      "file": "robustness/null_root.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    },
+    {
+      "file": "robustness/huge_nested_array.json",
+      "category": "robustness",
+      "exit_code": 1,
+      "stdout": "false",
+      "stderr": "",
+      "expected_exit_code": 1,
+      "correct": true
+    }
+  ]
+}

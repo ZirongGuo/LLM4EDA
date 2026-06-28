@@ -1,0 +1,38 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "direction_mismatch",
+    "top_module": "top"
+  },
+  "modules": [
+    {
+      "name": "child",
+      "ports": [
+        {
+          "name": "p",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1
+        }
+      ],
+      "signals": [
+        {
+          "name": "cnt",
+          "type": "reg",
+          "width": 8
+        }
+      ],
+      "assignments": [
+        {
+          "lhs": {
+            "ref": "p"
+          },
+          "rhs": {
+            "literal": "1'b1"
+          },
+          "blocking": true
+        }
+      ]
+    }
+  ]
+}

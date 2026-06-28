@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "minimal",
+    "top_module": "top"
+  },
+  "modules": [
+    {
+      "name": "top",
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1
+        }
+      ],
+      "signals": [
+        {
+          "name": "cnt",
+          "type": "reg",
+          "width": 8
+        }
+      ]
+    }
+  ],
+  "includes": [
+    123,
+    456
+  ]
+}

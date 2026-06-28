@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "minimal",
+    "top_module": "top"
+  },
+  "modules": {
+    "bad": "data"
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "design_name": "minimal",
+    "top_module": "top"
+  },
+  "modules": [
+    {
+      "name": "top",
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "data_type": "wire",
+          "width": 1
+        }
+      ],
+      "signals": [
+        {
+          "name": "cnt",
+          "type": "reg",
+          "width": 8
+        }
+      ],
+      "always_blocks": [
+        {
+          "id": "b1",
+          "type": "always_ff",
+          "sensitivity": [
+            {
+              "type": "posedge",
+              "signal": "clk"
+            }
+          ],
+          "body": [
+            {
+              "type": "assignment",
+              "lhs": {
+                "ref": "a"
+              },
+              "rhs": {
+                "literal": "1'b0"
+              },
+              "blocking": false
+            }
+          ]
+        },
+        {
+          "id": "b1",
+          "type": "always_ff",
+          "sensitivity": [
+            {
+              "type": "negedge",
+              "signal": "rst"
+            }
+          ],
+          "body": [
+            {
+              "type": "assignment",
+              "lhs": {
+                "ref": "b"
+              },
+              "rhs": {
+                "literal": "1'b1"
+              },
+              "blocking": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

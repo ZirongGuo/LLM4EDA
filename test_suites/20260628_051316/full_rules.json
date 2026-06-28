@@ -1,0 +1,325 @@
+{
+  "spec_version": "1.0.0",
+  "spec_hash": "015a6331259d5631ed435b42772ab1663a11f23af838f55539a853d5863ebebb",
+  "total_rules": 41,
+  "schema_rules_count": 29,
+  "business_rules_count": 12,
+  "rules": [
+    {
+      "id": "S001",
+      "source": "schema",
+      "path": "$",
+      "constraint": "type",
+      "expect": "object",
+      "description": "Field at $ must be of type object"
+    },
+    {
+      "id": "S002",
+      "source": "schema",
+      "path": "$",
+      "constraint": "required",
+      "expect": "version",
+      "description": "Required field \"version\" must exist at $"
+    },
+    {
+      "id": "S003",
+      "source": "schema",
+      "path": "$",
+      "constraint": "required",
+      "expect": "metadata",
+      "description": "Required field \"metadata\" must exist at $"
+    },
+    {
+      "id": "S004",
+      "source": "schema",
+      "path": "$",
+      "constraint": "required",
+      "expect": "modules",
+      "description": "Required field \"modules\" must exist at $"
+    },
+    {
+      "id": "S005",
+      "source": "schema",
+      "path": "$.version",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.version must be of type string"
+    },
+    {
+      "id": "S006",
+      "source": "schema",
+      "path": "$.metadata",
+      "constraint": "type",
+      "expect": "object",
+      "description": "Field at $.metadata must be of type object"
+    },
+    {
+      "id": "S007",
+      "source": "schema",
+      "path": "$.metadata.design_name",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.metadata.design_name must be of type string"
+    },
+    {
+      "id": "S008",
+      "source": "schema",
+      "path": "$.metadata.source_files",
+      "constraint": "type",
+      "expect": "array",
+      "description": "Field at $.metadata.source_files must be of type array"
+    },
+    {
+      "id": "S009",
+      "source": "schema",
+      "path": "$.metadata.source_files[]",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.metadata.source_files[] must be of type string"
+    },
+    {
+      "id": "S010",
+      "source": "schema",
+      "path": "$.metadata.top_module",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.metadata.top_module must be of type string"
+    },
+    {
+      "id": "S011",
+      "source": "schema",
+      "path": "$.metadata.description",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.metadata.description must be of type string"
+    },
+    {
+      "id": "S012",
+      "source": "schema",
+      "path": "$.metadata.generated_by",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.metadata.generated_by must be of type string"
+    },
+    {
+      "id": "S013",
+      "source": "schema",
+      "path": "$.metadata.generated_at",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.metadata.generated_at must be of type string"
+    },
+    {
+      "id": "S014",
+      "source": "schema",
+      "path": "$.includes",
+      "constraint": "type",
+      "expect": "array",
+      "description": "Field at $.includes must be of type array"
+    },
+    {
+      "id": "S015",
+      "source": "schema",
+      "path": "$.includes[]",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.includes[] must be of type string"
+    },
+    {
+      "id": "S016",
+      "source": "schema",
+      "path": "$.defines",
+      "constraint": "type",
+      "expect": "array",
+      "description": "Field at $.defines must be of type array"
+    },
+    {
+      "id": "S017",
+      "source": "schema",
+      "path": "$.defines[]",
+      "constraint": "type",
+      "expect": "object",
+      "description": "Field at $.defines[] must be of type object"
+    },
+    {
+      "id": "S018",
+      "source": "schema",
+      "path": "$.defines[]",
+      "constraint": "required",
+      "expect": "name",
+      "description": "Required field \"name\" must exist at $.defines[]"
+    },
+    {
+      "id": "S019",
+      "source": "schema",
+      "path": "$.defines[]",
+      "constraint": "required",
+      "expect": "value",
+      "description": "Required field \"value\" must exist at $.defines[]"
+    },
+    {
+      "id": "S020",
+      "source": "schema",
+      "path": "$.defines[].name",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.defines[].name must be of type string"
+    },
+    {
+      "id": "S021",
+      "source": "schema",
+      "path": "$.defines[].value",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.defines[].value must be of type string"
+    },
+    {
+      "id": "S022",
+      "source": "schema",
+      "path": "$.packages",
+      "constraint": "type",
+      "expect": "array",
+      "description": "Field at $.packages must be of type array"
+    },
+    {
+      "id": "S023",
+      "source": "schema",
+      "path": "$.packages[]",
+      "constraint": "type",
+      "expect": "object",
+      "description": "Field at $.packages[] must be of type object"
+    },
+    {
+      "id": "S024",
+      "source": "schema",
+      "path": "$.modules",
+      "constraint": "type",
+      "expect": "array",
+      "description": "Field at $.modules must be of type array"
+    },
+    {
+      "id": "S025",
+      "source": "schema",
+      "path": "$.design_hierarchy",
+      "constraint": "type",
+      "expect": "object",
+      "description": "Field at $.design_hierarchy must be of type object"
+    },
+    {
+      "id": "S026",
+      "source": "schema",
+      "path": "$.design_hierarchy.top",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.design_hierarchy.top must be of type string"
+    },
+    {
+      "id": "S027",
+      "source": "schema",
+      "path": "$.design_hierarchy.tree",
+      "constraint": "type",
+      "expect": "object",
+      "description": "Field at $.design_hierarchy.tree must be of type object"
+    },
+    {
+      "id": "S028",
+      "source": "schema",
+      "path": "$.design_hierarchy.tree.additionalProperties",
+      "constraint": "type",
+      "expect": "array",
+      "description": "Field at $.design_hierarchy.tree.additionalProperties must be of type array"
+    },
+    {
+      "id": "S029",
+      "source": "schema",
+      "path": "$.design_hierarchy.tree.additionalProperties[]",
+      "constraint": "type",
+      "expect": "string",
+      "description": "Field at $.design_hierarchy.tree.additionalProperties[] must be of type string"
+    },
+    {
+      "id": "B001",
+      "source": "business",
+      "path": "modules[].signals",
+      "constraint": "unique_signal_names",
+      "description": "Signal names within a module must be unique"
+    },
+    {
+      "id": "B002",
+      "source": "business",
+      "path": "modules[].ports",
+      "constraint": "unique_port_names",
+      "description": "Port names within a module must be unique"
+    },
+    {
+      "id": "B003",
+      "source": "business",
+      "path": "modules[].instances",
+      "constraint": "instance_module_resolvable",
+      "description": "Instance module references must refer to an existing module name"
+    },
+    {
+      "id": "B004",
+      "source": "business",
+      "path": "modules[].instances[].port_connections",
+      "constraint": "port_connection_count",
+      "description": "Port connection count should match target module port count"
+    },
+    {
+      "id": "B005",
+      "source": "business",
+      "path": "modules[].parameters",
+      "constraint": "parameter_value_type",
+      "description": "Parameter values must be string representations (not numeric types)"
+    },
+    {
+      "id": "B006",
+      "source": "business",
+      "path": "modules[].always_blocks",
+      "constraint": "always_block_id_unique",
+      "description": "Always block IDs within a module must be unique"
+    },
+    {
+      "id": "B007",
+      "source": "business",
+      "path": "modules[].instances[].name",
+      "constraint": "instance_name_unique",
+      "description": "Instance names within a module must be unique"
+    },
+    {
+      "id": "B008",
+      "source": "business",
+      "path": "modules[]",
+      "constraint": "module_name_unique",
+      "description": "Module names in the design must be unique"
+    },
+    {
+      "id": "B009",
+      "source": "business",
+      "path": "modules[].ports[].direction",
+      "constraint": "port_direction_connection_match",
+      "description": "Input ports must not be driven as outputs in port connections"
+    },
+    {
+      "id": "B010",
+      "source": "business",
+      "path": "version",
+      "constraint": "version_format",
+      "description": "Version string should follow semantic versioning (x.y.z)"
+    },
+    {
+      "id": "B011",
+      "source": "business",
+      "path": "modules[].functions[].body",
+      "constraint": "function_body_has_return",
+      "description": "Function body must contain at least one return statement"
+    },
+    {
+      "id": "B012",
+      "source": "business",
+      "path": "modules[].always_blocks[].sensitivity",
+      "constraint": "sensitivity_list_comb",
+      "description": "always_comb block should not have a sensitivity list"
+    }
+  ]
+}
