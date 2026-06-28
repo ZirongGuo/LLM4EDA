@@ -3,6 +3,10 @@
 A comprehensive toolchain for hardware design automation, bridging **Verilog**, **JSON**, **interactive HTML visualization**, and **Gem5 simulation**.  
 Built for agile chip development, LLM-assisted design, and rigorous validation workflows.
 
+<img width="1280" height="674" alt="b6ac493bf8d1a432848eb0c2952a064e" src="https://github.com/user-attachments/assets/fd48ada2-82bd-4227-b66c-954285197d09" />
+<img width="2559" height="1347" alt="7ca0f761a019742c973610a70f38d36b" src="https://github.com/user-attachments/assets/96125be4-13ee-4119-9576-900fb128192e" />
+
+
 ---
 
 ## ✨ Features
